@@ -2,66 +2,269 @@
 
 import { useMemo, useState } from "react";
 
+type ColorOption = {
+  name: string;
+  hex: string;
+};
+
 type Product = {
   id: number;
   name: string;
   price: number;
   category: string;
   description: string;
+  image: string;
+  sizes: string[];
+  colors: ColorOption[];
+};
+
+type SelectionState = {
+  colorIndex: number;
+  size: string;
+  freezeKey: number;
 };
 
 const products: Product[] = [
   {
     id: 1,
-    name: "Glacier Puff Jacket",
-    price: 180,
-    category: "Outerwear",
-    description: "Heavy icy-luxury puffer built for a bold frozen statement.",
+    name: "Ice Savant !$",
+    price: 58,
+    category: "T-Shirts",
+    description:
+      "A cold luxury statement tee with sharp graphics and an icy visual identity.",
+    image: "/merch/ice-savant-tee.png",
+    sizes: ["S", "M", "L", "XL"],
+    colors: [
+      { name: "Arctic White", hex: "#f7fbff" },
+      { name: "Glacier Blue", hex: "#b7dcff" },
+      { name: "Black Ice", hex: "#243447" },
+    ],
   },
   {
     id: 2,
     name: "Arctic Logo Hoodie",
     price: 95,
     category: "Hoodies",
-    description: "Premium heavyweight hoodie with cold blue Top Eskimo energy.",
+    description:
+      "Heavyweight hoodie with premium comfort and a frozen streetwear edge.",
+    image: "/merch/arctic-hoodie.png",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: [
+      { name: "Snow", hex: "#f8fbff" },
+      { name: "Ice Blue", hex: "#8fd0ff" },
+      { name: "Midnight Frost", hex: "#1f2e40" },
+    ],
   },
   {
     id: 3,
-    name: "Frostbite Cargo Pants",
-    price: 110,
-    category: "Bottoms",
-    description: "Clean streetwear fit with an icy technical edge.",
+    name: "Glacier Puff Jacket",
+    price: 180,
+    category: "Outerwear",
+    description:
+      "Statement outerwear with bold frozen volume and premium cold-weather styling.",
+    image: "/merch/glacier-jacket.png",
+    sizes: ["M", "L", "XL"],
+    colors: [
+      { name: "Polar White", hex: "#f5fbff" },
+      { name: "Frozen Silver", hex: "#c8d8e8" },
+      { name: "Deep Navy", hex: "#28445f" },
+    ],
   },
   {
     id: 4,
-    name: "Polar Graphic Tee",
-    price: 52,
-    category: "Tees",
-    description: "Minimal luxury tee for everyday frozen style.",
-  },
-  {
-    id: 5,
-    name: "Snowfall Beanie",
-    price: 38,
-    category: "Accessories",
-    description: "Soft knit beanie finished with a cold-weather brand identity.",
-  },
-  {
-    id: 6,
-    name: "Ice Runner Set",
-    price: 140,
-    category: "Sets",
-    description: "Matching streetwear set designed for a sharp icy silhouette.",
+    name: "Frost Sweat Set",
+    price: 135,
+    category: "Sweats",
+    description:
+      "Luxury sweats with a clean icy palette and a strong branded presence.",
+    image: "/merch/frost-sweats.png",
+    sizes: ["S", "M", "L", "XL"],
+    colors: [
+      { name: "Cloud", hex: "#eef6ff" },
+      { name: "Blue Mist", hex: "#b7dfff" },
+      { name: "Steel Ice", hex: "#64788d" },
+    ],
   },
 ];
 
+function ProductCard({
+  product,
+  selection,
+  quantity,
+  onSelectColor,
+  onSelectSize,
+  onAddToCart,
+}: {
+  product: Product;
+  selection: SelectionState;
+  quantity: number;
+  onSelectColor: (productId: number, colorIndex: number) => void;
+  onSelectSize: (productId: number, size: string) => void;
+  onAddToCart: (productId: number) => void;
+}) {
+  const activeColor = product.colors[selection.colorIndex];
+
+  return (
+    <div className="rounded-[2rem] border border-sky-100 bg-white/90 p-6 shadow-[0_12px_40px_rgba(110,170,220,0.12)] transition hover:-translate-y-1">
+      <div className="mb-5 inline-flex rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#1a73c9]">
+        {product.category}
+      </div>
+
+      <div className="relative overflow-hidden rounded-[1.6rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(240,249,255,0.96),rgba(255,255,255,0.98))] p-4 shadow-inner">
+        <div
+          key={selection.freezeKey}
+          className="relative flex h-[260px] items-center justify-center overflow-hidden rounded-[1.2rem]"
+          style={{
+            background: `radial-gradient(circle at top, ${activeColor.hex}55, rgba(255,255,255,0.95) 58%)`,
+          }}
+        >
+          <div className="frost-burst pointer-events-none absolute inset-0" />
+          <img
+            src={product.image}
+            alt={product.name}
+            className="relative z-10 max-h-[220px] w-auto object-contain drop-shadow-[0_20px_30px_rgba(120,170,220,0.2)]"
+          />
+        </div>
+      </div>
+
+      <div className="mt-6 flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-2xl font-bold text-slate-800">{product.name}</h3>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            {product.description}
+          </p>
+        </div>
+        <span className="whitespace-nowrap text-xl font-black text-[#1a73c9]">
+          ${product.price}
+        </span>
+      </div>
+
+      <div className="mt-6">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+          Color
+        </p>
+        <div className="flex flex-wrap gap-3">
+          {product.colors.map((color, index) => {
+            const active = selection.colorIndex === index;
+            return (
+              <button
+                key={color.name}
+                type="button"
+                onClick={() => onSelectColor(product.id, index)}
+                className={`flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition ${
+                  active
+                    ? "border-sky-400 bg-sky-50 text-[#1a73c9]"
+                    : "border-sky-100 bg-white text-slate-700 hover:border-sky-300"
+                }`}
+              >
+                <span
+                  className="h-4 w-4 rounded-full border border-slate-200"
+                  style={{ backgroundColor: color.hex }}
+                />
+                {color.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+          Size
+        </p>
+        <div className="flex flex-wrap gap-3">
+          {product.sizes.map((size) => {
+            const active = selection.size === size;
+            return (
+              <button
+                key={size}
+                type="button"
+                onClick={() => onSelectSize(product.id, size)}
+                className={`min-w-[56px] rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                  active
+                    ? "border-sky-400 bg-[#1a73c9] text-white"
+                    : "border-sky-100 bg-white text-slate-700 hover:border-sky-300"
+                }`}
+              >
+                {size}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-7 flex items-center justify-between gap-3">
+        <div className="text-sm text-slate-500">
+          <div>
+            Selected:{" "}
+            <span className="font-semibold text-slate-700">{activeColor.name}</span>
+          </div>
+          <div>
+            Size:{" "}
+            <span className="font-semibold text-slate-700">{selection.size}</span>
+          </div>
+        </div>
+
+        <button
+          onClick={() => onAddToCart(product.id)}
+          className="rounded-full bg-[#1a73c9] px-5 py-3 text-sm font-semibold text-white transition hover:scale-[1.02]"
+        >
+          Add to Cart
+        </button>
+      </div>
+
+      {quantity > 0 ? (
+        <p className="mt-4 text-sm font-medium text-sky-700">Added: {quantity}</p>
+      ) : null}
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [cart, setCart] = useState<Record<number, number>>({});
+  const [selections, setSelections] = useState<Record<number, SelectionState>>(() =>
+    Object.fromEntries(
+      products.map((product) => [
+        product.id,
+        {
+          colorIndex: 0,
+          size: product.sizes[0],
+          freezeKey: 0,
+        },
+      ])
+    )
+  );
 
   const addToCart = (id: number) => {
     setCart((prev) => ({
       ...prev,
       [id]: (prev[id] || 0) + 1,
+    }));
+  };
+
+  const updateSelection = (
+    productId: number,
+    updater: (current: SelectionState) => SelectionState
+  ) => {
+    setSelections((prev) => ({
+      ...prev,
+      [productId]: updater(prev[productId]),
+    }));
+  };
+
+  const selectColor = (productId: number, colorIndex: number) => {
+    updateSelection(productId, (current) => ({
+      ...current,
+      colorIndex,
+      freezeKey: current.freezeKey + 1,
+    }));
+  };
+
+  const selectSize = (productId: number, size: string) => {
+    updateSelection(productId, (current) => ({
+      ...current,
+      size,
+      freezeKey: current.freezeKey + 1,
     }));
   };
 
@@ -198,48 +401,23 @@ export default function HomePage() {
               Signature cold-weather streetwear
             </h2>
             <p className="mx-auto mt-5 max-w-3xl leading-8 text-slate-600">
-              Here is the clothing section back in the site layout, with example
-              pieces and add-to-cart buttons so the storefront still feels like a
-              real brand page.
+              Customers can click color and size options, and the merchandise image
+              flashes with a quick icy freeze effect before settling into the new
+              selection.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2">
             {products.map((product) => (
-              <div
+              <ProductCard
                 key={product.id}
-                className="rounded-[2rem] border border-sky-100 bg-white/85 p-8 shadow-[0_12px_40px_rgba(110,170,220,0.12)] transition hover:-translate-y-1"
-              >
-                <div className="mb-5 inline-flex rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#1a73c9]">
-                  {product.category}
-                </div>
-
-                <h3 className="text-2xl font-bold text-slate-800">
-                  {product.name}
-                </h3>
-
-                <p className="mt-4 min-h-[84px] leading-7 text-slate-600">
-                  {product.description}
-                </p>
-
-                <div className="mt-6 flex items-center justify-between">
-                  <span className="text-xl font-black text-[#1a73c9]">
-                    ${product.price}
-                  </span>
-                  <button
-                    onClick={() => addToCart(product.id)}
-                    className="rounded-full bg-[#1a73c9] px-5 py-3 text-sm font-semibold text-white transition hover:scale-[1.02]"
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-
-                {cart[product.id] ? (
-                  <p className="mt-4 text-sm font-medium text-sky-700">
-                    Added: {cart[product.id]}
-                  </p>
-                ) : null}
-              </div>
+                product={product}
+                selection={selections[product.id]}
+                quantity={cart[product.id] || 0}
+                onSelectColor={selectColor}
+                onSelectSize={selectSize}
+                onAddToCart={addToCart}
+              />
             ))}
           </div>
         </div>
@@ -263,17 +441,13 @@ export default function HomePage() {
 
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             <div className="rounded-[1.75rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(234,247,255,0.95),rgba(255,255,255,0.95))] p-7">
-              <h3 className="text-xl font-bold text-slate-800">
-                Ice Luxury
-              </h3>
+              <h3 className="text-xl font-bold text-slate-800">Ice Luxury</h3>
               <p className="mt-3 leading-7 text-slate-600">
                 Premium silhouettes and clean presentation built to feel elevated.
               </p>
             </div>
             <div className="rounded-[1.75rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(234,247,255,0.95),rgba(255,255,255,0.95))] p-7">
-              <h3 className="text-xl font-bold text-slate-800">
-                Bold Identity
-              </h3>
+              <h3 className="text-xl font-bold text-slate-800">Bold Identity</h3>
               <p className="mt-3 leading-7 text-slate-600">
                 Strong graphics and memorable visual branding that stand apart.
               </p>
@@ -344,8 +518,7 @@ export default function HomePage() {
           <p className="mt-4 leading-8 text-slate-600">
             From the logo designs to the website experience, every detail is meant
             to feel sharp, polished, and bold. The brand reflects creativity,
-            ambition, and the drive to build something memorable from the ground
-            up.
+            ambition, and the drive to build something memorable from the ground up.
           </p>
         </div>
       </section>
@@ -388,12 +561,44 @@ export default function HomePage() {
           animation: shimmerFlow 6.5s linear infinite;
         }
 
+        .frost-burst {
+          opacity: 0;
+          background:
+            radial-gradient(circle at center, rgba(255, 255, 255, 0.82), rgba(200, 235, 255, 0.18) 45%, transparent 70%),
+            linear-gradient(
+              135deg,
+              transparent 0%,
+              rgba(255, 255, 255, 0.55) 20%,
+              rgba(180, 230, 255, 0.5) 35%,
+              transparent 55%,
+              rgba(255, 255, 255, 0.35) 75%,
+              transparent 100%
+            );
+          animation: freezeFlash 0.7s ease-out;
+        }
+
         @keyframes shimmerFlow {
           0% {
             background-position: 200% center;
           }
           100% {
             background-position: -200% center;
+          }
+        }
+
+        @keyframes freezeFlash {
+          0% {
+            opacity: 0;
+            transform: scale(0.96);
+            filter: blur(12px);
+          }
+          20% {
+            opacity: 0.95;
+          }
+          100% {
+            opacity: 0;
+            transform: scale(1.06);
+            filter: blur(0px);
           }
         }
       `}</style>
