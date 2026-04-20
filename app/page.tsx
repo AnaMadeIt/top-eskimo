@@ -1,26 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
-
-const logoImages = [
-  "/logos/top-eskimo-1.png",
-  "/logos/top-eskimo-2.png",
-  "/logos/top-eskimo-3.png",
-  "/logos/top-eskimo-4.png",
-];
-
 export default function HomePage() {
-  const [currentLogo, setCurrentLogo] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentLogo((prev) => (prev + 1) % logoImages.length);
-    }, 3500);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <main className="min-h-screen bg-[#eef8ff] text-slate-900">
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(180,225,255,0.55),_rgba(238,248,255,0.95)_40%,_rgba(238,248,255,1)_75%)]" />
@@ -121,47 +101,18 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div className="relative mx-auto flex min-h-[420px] max-w-4xl items-center justify-center overflow-hidden rounded-[2rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(238,248,255,0.95),rgba(255,255,255,0.9))] p-6 md:min-h-[560px]">
-            {logoImages.map((src, index) => (
-              <div
-                key={src}
-                className={`absolute inset-0 transition-all duration-1000 ${
-                  index === currentLogo
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-[1.02]"
-                }`}
-              >
-                <div className="relative h-full w-full">
-                  <Image
-                    src={src}
-                    alt={`Top Eskimo logo ${index + 1}`}
-                    fill
-                    className="object-contain p-6"
-                    priority={index === 0}
-                  />
-                </div>
-              </div>
-            ))}
+          <div className="relative mx-auto flex min-h-[420px] max-w-4xl items-center justify-center overflow-hidden rounded-[2rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(238,248,255,0.95),rgba(255,255,255,0.92))] p-6 md:min-h-[560px]">
+            <img
+              src="/logos/Top%20Eskimo%20in%20snowy%20winterland.png"
+              alt="Top Eskimo logo collection"
+              className="h-auto max-h-[520px] w-full rounded-[1.5rem] object-contain"
+            />
           </div>
 
           <p className="mt-6 text-center text-sm leading-7 text-slate-500">
-            Put your logo files in{" "}
-            <span className="rounded bg-sky-50 px-2 py-1 font-mono text-sky-700">
-              public/logos/
-            </span>{" "}
-            and name them exactly:
-            <br />
-            <span className="rounded bg-sky-50 px-2 py-1 font-mono text-sky-700">
-              top-eskimo-1.png
-            </span>{" "}
-            <span className="rounded bg-sky-50 px-2 py-1 font-mono text-sky-700">
-              top-eskimo-2.png
-            </span>{" "}
-            <span className="rounded bg-sky-50 px-2 py-1 font-mono text-sky-700">
-              top-eskimo-3.png
-            </span>{" "}
-            <span className="rounded bg-sky-50 px-2 py-1 font-mono text-sky-700">
-              top-eskimo-4.png
+            This section is pulling directly from:
+            <span className="ml-1 rounded bg-sky-50 px-2 py-1 font-mono text-sky-700">
+              public/logos/Top Eskimo in snowy winterland.png
             </span>
           </p>
         </div>
@@ -298,35 +249,30 @@ export default function HomePage() {
         .logo-shimmer {
           background-image: linear-gradient(
             90deg,
-            #8fd3ff 0%,
-            #ffffff 18%,
-            #7ec8ff 36%,
-            #e8f8ff 50%,
-            #ffffff 62%,
-            #7fcfff 78%,
-            #9ddcff 100%
+            #7fbff2 0%,
+            #d9f1ff 20%,
+            #9ccff7 40%,
+            #eefaff 50%,
+            #9ccff7 60%,
+            #d9f1ff 80%,
+            #7fbff2 100%
           );
-          background-size: 220% auto;
+          background-size: 200% auto;
           -webkit-background-clip: text;
           background-clip: text;
           text-shadow:
-            0 0 10px rgba(140, 215, 255, 0.35),
-            0 0 22px rgba(90, 180, 255, 0.25),
-            0 0 40px rgba(255, 255, 255, 0.4);
-          animation: shimmerFlow 3.8s linear infinite;
+            0 0 6px rgba(160, 215, 255, 0.18),
+            0 0 16px rgba(120, 195, 255, 0.12),
+            0 0 24px rgba(255, 255, 255, 0.18);
+          animation: shimmerFlow 5.5s linear infinite;
         }
 
         @keyframes shimmerFlow {
           0% {
             background-position: 200% center;
-            filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0.2));
-          }
-          50% {
-            filter: drop-shadow(0 0 10px rgba(190, 235, 255, 0.65));
           }
           100% {
             background-position: -200% center;
-            filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0.2));
           }
         }
       `}</style>
