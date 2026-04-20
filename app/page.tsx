@@ -1,14 +1,83 @@
 "use client";
 
+import { useMemo, useState } from "react";
+
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+  description: string;
+};
+
+const products: Product[] = [
+  {
+    id: 1,
+    name: "Glacier Puff Jacket",
+    price: 180,
+    category: "Outerwear",
+    description: "Heavy icy-luxury puffer built for a bold frozen statement.",
+  },
+  {
+    id: 2,
+    name: "Arctic Logo Hoodie",
+    price: 95,
+    category: "Hoodies",
+    description: "Premium heavyweight hoodie with cold blue Top Eskimo energy.",
+  },
+  {
+    id: 3,
+    name: "Frostbite Cargo Pants",
+    price: 110,
+    category: "Bottoms",
+    description: "Clean streetwear fit with an icy technical edge.",
+  },
+  {
+    id: 4,
+    name: "Polar Graphic Tee",
+    price: 52,
+    category: "Tees",
+    description: "Minimal luxury tee for everyday frozen style.",
+  },
+  {
+    id: 5,
+    name: "Snowfall Beanie",
+    price: 38,
+    category: "Accessories",
+    description: "Soft knit beanie finished with a cold-weather brand identity.",
+  },
+  {
+    id: 6,
+    name: "Ice Runner Set",
+    price: 140,
+    category: "Sets",
+    description: "Matching streetwear set designed for a sharp icy silhouette.",
+  },
+];
+
 export default function HomePage() {
+  const [cart, setCart] = useState<Record<number, number>>({});
+
+  const addToCart = (id: number) => {
+    setCart((prev) => ({
+      ...prev,
+      [id]: (prev[id] || 0) + 1,
+    }));
+  };
+
+  const cartCount = useMemo(
+    () => Object.values(cart).reduce((sum, qty) => sum + qty, 0),
+    [cart]
+  );
+
   return (
     <main className="min-h-screen bg-[#eef8ff] text-slate-900">
-      <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(180,225,255,0.55),_rgba(238,248,255,0.95)_40%,_rgba(238,248,255,1)_75%)]" />
-      <div className="pointer-events-none fixed inset-0 -z-10 opacity-50">
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(180,225,255,0.58),_rgba(238,248,255,0.95)_40%,_rgba(238,248,255,1)_75%)]" />
+      <div className="pointer-events-none fixed inset-0 -z-10 opacity-40">
         <div className="absolute inset-0 bg-[url('/ice-bg.png')] bg-cover bg-center" />
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-sky-100 bg-white/85 backdrop-blur-md">
+      <header className="border-b border-sky-100 bg-white/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <a
             href="#home"
@@ -33,17 +102,25 @@ export default function HomePage() {
             <a href="#designer" className="transition hover:text-[#1a73c9]">
               Designer Profile
             </a>
+            <a href="#about" className="transition hover:text-[#1a73c9]">
+              About
+            </a>
             <a href="#contact" className="transition hover:text-[#1a73c9]">
               Contact
             </a>
           </nav>
 
-          <a
-            href="#shop"
-            className="rounded-full border border-sky-400 px-6 py-3 text-sm font-semibold text-[#1a73c9] transition hover:bg-sky-50"
-          >
-            Shop Now
-          </a>
+          <div className="flex items-center gap-3">
+            <div className="rounded-full border border-sky-200 bg-white px-4 py-2 text-sm font-semibold text-[#1a73c9] shadow-sm">
+              Cart ({cartCount})
+            </div>
+            <a
+              href="#shop"
+              className="rounded-full border border-sky-400 px-6 py-3 text-sm font-semibold text-[#1a73c9] transition hover:bg-sky-50"
+            >
+              Shop Now
+            </a>
+          </div>
         </div>
       </header>
 
@@ -73,10 +150,10 @@ export default function HomePage() {
 
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <a
-                  href="#logos"
+                  href="#shop"
                   className="rounded-full bg-[#1a73c9] px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-sky-200 transition hover:scale-[1.02]"
                 >
-                  View Logo Collection
+                  View Collection
                 </a>
                 <a
                   href="#designer"
@@ -108,40 +185,63 @@ export default function HomePage() {
               className="h-auto max-h-[520px] w-full rounded-[1.5rem] object-contain"
             />
           </div>
-
-          <p className="mt-6 text-center text-sm leading-7 text-slate-500">
-            This section is pulling directly from:
-            <span className="ml-1 rounded bg-sky-50 px-2 py-1 font-mono text-sky-700">
-              public/logos/Top Eskimo in snowy winterland.png
-            </span>
-          </p>
         </div>
       </section>
 
       <section id="shop" className="px-6 py-10 md:py-16">
-        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
-          {[
-            {
-              title: "Luxury Outerwear",
-              text: "Premium cold-weather pieces built with a bold frozen aesthetic.",
-            },
-            {
-              title: "Signature Graphics",
-              text: "Statement logo styles and eye-catching visuals that define the brand.",
-            },
-            {
-              title: "Ice-Cold Identity",
-              text: "Streetwear with attitude, confidence, and unmistakable visual energy.",
-            },
-          ].map((item) => (
-            <div
-              key={item.title}
-              className="rounded-[2rem] border border-sky-100 bg-white/85 p-8 shadow-[0_12px_40px_rgba(110,170,220,0.12)] transition hover:-translate-y-1"
-            >
-              <h3 className="text-xl font-bold text-slate-800">{item.title}</h3>
-              <p className="mt-4 leading-7 text-slate-600">{item.text}</p>
-            </div>
-          ))}
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-10 text-center">
+            <p className="text-sm font-bold uppercase tracking-[0.5em] text-[#1a73c9]">
+              Shop
+            </p>
+            <h2 className="mt-4 text-3xl font-bold text-slate-800 md:text-4xl">
+              Signature cold-weather streetwear
+            </h2>
+            <p className="mx-auto mt-5 max-w-3xl leading-8 text-slate-600">
+              Here is the clothing section back in the site layout, with example
+              pieces and add-to-cart buttons so the storefront still feels like a
+              real brand page.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="rounded-[2rem] border border-sky-100 bg-white/85 p-8 shadow-[0_12px_40px_rgba(110,170,220,0.12)] transition hover:-translate-y-1"
+              >
+                <div className="mb-5 inline-flex rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#1a73c9]">
+                  {product.category}
+                </div>
+
+                <h3 className="text-2xl font-bold text-slate-800">
+                  {product.name}
+                </h3>
+
+                <p className="mt-4 min-h-[84px] leading-7 text-slate-600">
+                  {product.description}
+                </p>
+
+                <div className="mt-6 flex items-center justify-between">
+                  <span className="text-xl font-black text-[#1a73c9]">
+                    ${product.price}
+                  </span>
+                  <button
+                    onClick={() => addToCart(product.id)}
+                    className="rounded-full bg-[#1a73c9] px-5 py-3 text-sm font-semibold text-white transition hover:scale-[1.02]"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+
+                {cart[product.id] ? (
+                  <p className="mt-4 text-sm font-medium text-sky-700">
+                    Added: {cart[product.id]}
+                  </p>
+                ) : null}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -156,9 +256,36 @@ export default function HomePage() {
             </h2>
             <p className="mx-auto mt-6 max-w-3xl leading-8 text-slate-600">
               Top Eskimo is built around standout visuals, premium styling, and a
-              cold, elevated identity. Every piece is meant to feel sharp, rare,
-              and unmistakably bold.
+              cold elevated identity. Every piece is meant to feel sharp, rare, and
+              unmistakably bold.
             </p>
+          </div>
+
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            <div className="rounded-[1.75rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(234,247,255,0.95),rgba(255,255,255,0.95))] p-7">
+              <h3 className="text-xl font-bold text-slate-800">
+                Ice Luxury
+              </h3>
+              <p className="mt-3 leading-7 text-slate-600">
+                Premium silhouettes and clean presentation built to feel elevated.
+              </p>
+            </div>
+            <div className="rounded-[1.75rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(234,247,255,0.95),rgba(255,255,255,0.95))] p-7">
+              <h3 className="text-xl font-bold text-slate-800">
+                Bold Identity
+              </h3>
+              <p className="mt-3 leading-7 text-slate-600">
+                Strong graphics and memorable visual branding that stand apart.
+              </p>
+            </div>
+            <div className="rounded-[1.75rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(234,247,255,0.95),rgba(255,255,255,0.95))] p-7">
+              <h3 className="text-xl font-bold text-slate-800">
+                Streetwear Edge
+              </h3>
+              <p className="mt-3 leading-7 text-slate-600">
+                A cold-weather fashion concept with confidence and attitude.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -176,13 +303,11 @@ export default function HomePage() {
               <p className="mt-6 leading-8 text-slate-600">
                 Top Eskimo was created to bring a bold frozen identity into luxury
                 streetwear. The goal is simple: build a brand that feels cold,
-                premium, confident, and unforgettable. Every logo, every visual,
-                and every piece is designed to carry an icy presence that stands
-                apart.
+                premium, confident, and unforgettable.
               </p>
               <p className="mt-4 leading-8 text-slate-600">
-                This brand is for people who want statement fashion with a strong
-                visual edge. Clean, cold, elevated, and fearless.
+                Every logo, every visual, and every piece is designed to carry an
+                icy presence that stands apart.
               </p>
             </div>
 
@@ -211,7 +336,7 @@ export default function HomePage() {
             The vision behind Top Eskimo
           </h2>
           <p className="mt-6 leading-8 text-slate-600">
-            Top Eskimo is more than a clothing idea — it is a brand vision built
+            Top Eskimo is more than a clothing idea. It is a brand vision built
             around confidence, originality, and a cold luxury aesthetic. The goal
             is to create a fashion identity that feels premium, different, and
             instantly recognizable.
@@ -219,12 +344,8 @@ export default function HomePage() {
           <p className="mt-4 leading-8 text-slate-600">
             From the logo designs to the website experience, every detail is meant
             to feel sharp, polished, and bold. The brand reflects creativity,
-            ambition, and the desire to build something memorable from the ground
+            ambition, and the drive to build something memorable from the ground
             up.
-          </p>
-          <p className="mt-4 leading-8 text-slate-600">
-            Top Eskimo stands for making an impression — clean visuals, icy energy,
-            and elevated streetwear style that people remember.
           </p>
         </div>
       </section>
@@ -249,22 +370,22 @@ export default function HomePage() {
         .logo-shimmer {
           background-image: linear-gradient(
             90deg,
-            #7fbff2 0%,
-            #d9f1ff 20%,
-            #9ccff7 40%,
-            #eefaff 50%,
-            #9ccff7 60%,
-            #d9f1ff 80%,
-            #7fbff2 100%
+            #8dbfe6 0%,
+            #dff3ff 18%,
+            #b3daf7 35%,
+            #f7fcff 50%,
+            #b3daf7 65%,
+            #dff3ff 82%,
+            #8dbfe6 100%
           );
-          background-size: 200% auto;
+          background-size: 220% auto;
           -webkit-background-clip: text;
           background-clip: text;
           text-shadow:
-            0 0 6px rgba(160, 215, 255, 0.18),
-            0 0 16px rgba(120, 195, 255, 0.12),
-            0 0 24px rgba(255, 255, 255, 0.18);
-          animation: shimmerFlow 5.5s linear infinite;
+            0 0 4px rgba(170, 220, 255, 0.16),
+            0 0 12px rgba(120, 195, 255, 0.1),
+            0 0 20px rgba(255, 255, 255, 0.15);
+          animation: shimmerFlow 6.5s linear infinite;
         }
 
         @keyframes shimmerFlow {
