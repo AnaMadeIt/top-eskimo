@@ -87,6 +87,52 @@ const products: Product[] = [
   },
 ];
 
+const blizzardItems = [
+  { left: "3%", delay: "0s", duration: "18s", size: 18, type: "snow" },
+  { left: "8%", delay: "2s", duration: "21s", size: 12, type: "diamond" },
+  { left: "14%", delay: "5s", duration: "17s", size: 22, type: "shard" },
+  { left: "19%", delay: "1s", duration: "20s", size: 14, type: "snow" },
+  { left: "25%", delay: "3s", duration: "22s", size: 20, type: "diamond" },
+  { left: "31%", delay: "6s", duration: "16s", size: 24, type: "shard" },
+  { left: "38%", delay: "2.5s", duration: "19s", size: 13, type: "snow" },
+  { left: "44%", delay: "4.5s", duration: "23s", size: 17, type: "diamond" },
+  { left: "50%", delay: "0.5s", duration: "18s", size: 26, type: "shard" },
+  { left: "57%", delay: "7s", duration: "21s", size: 15, type: "snow" },
+  { left: "63%", delay: "1.5s", duration: "20s", size: 19, type: "diamond" },
+  { left: "69%", delay: "5.5s", duration: "17s", size: 23, type: "shard" },
+  { left: "74%", delay: "3.2s", duration: "24s", size: 14, type: "snow" },
+  { left: "81%", delay: "6.2s", duration: "18s", size: 18, type: "diamond" },
+  { left: "87%", delay: "2.2s", duration: "22s", size: 21, type: "shard" },
+  { left: "93%", delay: "4.2s", duration: "19s", size: 12, type: "snow" },
+];
+
+function BlizzardBackground() {
+  return (
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(180,225,255,0.58),_rgba(238,248,255,0.95)_40%,_rgba(238,248,255,1)_75%)]" />
+      <div className="absolute inset-0 bg-[url('/ice-bg.png')] bg-cover bg-center opacity-20" />
+
+      <div className="absolute inset-0 opacity-[0.34]">
+        {blizzardItems.map((item, index) => (
+          <span
+            key={`${item.left}-${index}`}
+            className={`blizzard-item ${item.type}`}
+            style={{
+              left: item.left,
+              animationDelay: item.delay,
+              animationDuration: item.duration,
+              width: `${item.size}px`,
+              height: `${item.size}px`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0)_20%,rgba(255,255,255,0)_80%,rgba(255,255,255,0.08))]" />
+    </div>
+  );
+}
+
 function ProductCard({
   product,
   selection,
@@ -275,12 +321,9 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-[#eef8ff] text-slate-900">
-      <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(180,225,255,0.58),_rgba(238,248,255,0.95)_40%,_rgba(238,248,255,1)_75%)]" />
-      <div className="pointer-events-none fixed inset-0 -z-10 opacity-40">
-        <div className="absolute inset-0 bg-[url('/ice-bg.png')] bg-cover bg-center" />
-      </div>
+      <BlizzardBackground />
 
-      <header className="border-b border-sky-100 bg-white/85 backdrop-blur-md">
+      <header className="border-b border-sky-100 bg-white/82 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <a
             href="#home"
@@ -332,7 +375,7 @@ export default function HomePage() {
         className="relative overflow-hidden px-6 pb-16 pt-14 md:pb-24 md:pt-20"
       >
         <div className="mx-auto max-w-7xl">
-          <div className="relative overflow-hidden rounded-[3rem] border border-white/70 bg-white/55 px-6 py-16 shadow-[0_25px_80px_rgba(80,150,220,0.18)] backdrop-blur-sm md:px-14 md:py-24">
+          <div className="relative overflow-hidden rounded-[3rem] border border-white/70 bg-white/60 px-6 py-16 shadow-[0_25px_80px_rgba(80,150,220,0.18)] backdrop-blur-sm md:px-14 md:py-24">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(220,245,255,0.95),_rgba(255,255,255,0.45)_60%)]" />
 
             <div className="relative z-10 text-center">
@@ -371,7 +414,7 @@ export default function HomePage() {
       </section>
 
       <section id="logos" className="px-6 py-10 md:py-16">
-        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/80 p-6 shadow-[0_18px_60px_rgba(100,170,220,0.14)] backdrop-blur-sm md:p-10">
+        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/82 p-6 shadow-[0_18px_60px_rgba(100,170,220,0.14)] backdrop-blur-sm md:p-10">
           <div className="mb-8 text-center">
             <p className="text-sm font-bold uppercase tracking-[0.5em] text-[#1a73c9]">
               Logo Collection
@@ -424,7 +467,7 @@ export default function HomePage() {
       </section>
 
       <section id="lookbook" className="px-6 py-10 md:py-16">
-        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/80 p-8 shadow-[0_18px_60px_rgba(100,170,220,0.14)]">
+        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/82 p-8 shadow-[0_18px_60px_rgba(100,170,220,0.14)] backdrop-blur-sm">
           <div className="text-center">
             <p className="text-sm font-bold uppercase tracking-[0.5em] text-[#1a73c9]">
               Lookbook
@@ -465,7 +508,7 @@ export default function HomePage() {
       </section>
 
       <section id="designer" className="px-6 py-10 md:py-16">
-        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/85 p-8 shadow-[0_18px_60px_rgba(100,170,220,0.14)] md:p-12">
+        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/84 p-8 shadow-[0_18px_60px_rgba(100,170,220,0.14)] backdrop-blur-sm md:p-12">
           <div className="grid items-center gap-10 md:grid-cols-[1.1fr_0.9fr]">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.5em] text-[#1a73c9]">
@@ -502,7 +545,7 @@ export default function HomePage() {
       </section>
 
       <section id="about" className="px-6 py-10 pb-20 md:py-16 md:pb-28">
-        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/85 p-8 shadow-[0_18px_60px_rgba(100,170,220,0.14)] md:p-12">
+        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/84 p-8 shadow-[0_18px_60px_rgba(100,170,220,0.14)] backdrop-blur-sm md:p-12">
           <p className="text-sm font-bold uppercase tracking-[0.5em] text-[#1a73c9]">
             About Me
           </p>
@@ -524,7 +567,7 @@ export default function HomePage() {
       </section>
 
       <section id="contact" className="px-6 pb-20">
-        <div className="mx-auto max-w-6xl rounded-[2rem] border border-sky-100 bg-white/85 p-8 text-center shadow-[0_18px_60px_rgba(100,170,220,0.14)]">
+        <div className="mx-auto max-w-6xl rounded-[2rem] border border-sky-100 bg-white/84 p-8 text-center shadow-[0_18px_60px_rgba(100,170,220,0.14)] backdrop-blur-sm">
           <h2 className="text-2xl font-bold text-slate-800 md:text-3xl">
             Ready to build the brand bigger?
           </h2>
@@ -577,6 +620,48 @@ export default function HomePage() {
           animation: freezeFlash 0.7s ease-out;
         }
 
+        .blizzard-item {
+          position: absolute;
+          top: -10%;
+          filter: blur(0.2px);
+          animation-name: blizzardFall;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          will-change: transform, opacity;
+        }
+
+        .blizzard-item.snow {
+          border-radius: 999px;
+          background: radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.95) 0%,
+            rgba(215, 240, 255, 0.9) 55%,
+            rgba(215, 240, 255, 0) 100%
+          );
+          box-shadow: 0 0 10px rgba(210, 240, 255, 0.35);
+        }
+
+        .blizzard-item.diamond {
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.8),
+            rgba(180, 225, 255, 0.6)
+          );
+          transform: rotate(45deg);
+          clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+          box-shadow: 0 0 12px rgba(180, 225, 255, 0.28);
+        }
+
+        .blizzard-item.shard {
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.75),
+            rgba(170, 220, 255, 0.45)
+          );
+          clip-path: polygon(50% 0%, 100% 25%, 65% 100%, 20% 78%, 0% 28%);
+          box-shadow: 0 0 10px rgba(170, 220, 255, 0.22);
+        }
+
         @keyframes shimmerFlow {
           0% {
             background-position: 200% center;
@@ -599,6 +684,24 @@ export default function HomePage() {
             opacity: 0;
             transform: scale(1.06);
             filter: blur(0px);
+          }
+        }
+
+        @keyframes blizzardFall {
+          0% {
+            transform: translate3d(0, -10vh, 0) rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.85;
+          }
+          50% {
+            transform: translate3d(38px, 50vh, 0) rotate(120deg);
+            opacity: 0.5;
+          }
+          100% {
+            transform: translate3d(-26px, 115vh, 0) rotate(240deg);
+            opacity: 0;
           }
         }
       `}</style>
