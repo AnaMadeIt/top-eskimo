@@ -4,8 +4,6 @@ import { useMemo, useState } from "react";
 
 const logoSrc = "/logos/Top Eskimo in snowy winterland.png";
 
-const categories = ["Men’s", "Women’s", "T-Shirts", "Sweatshirts", "Sweatpants"];
-
 const products = [
   { name: "Ice Savant !$", type: "T-Shirt", price: "$45" },
   { name: "Frozen Standard Tee", type: "T-Shirt", price: "$40" },
@@ -19,22 +17,45 @@ const sizes = ["S", "M", "L", "XL", "XXL"];
 function BlizzardBackground() {
   const particles = useMemo(
     () =>
-      Array.from({ length: 110 }).map((_, i) => ({
+      Array.from({ length: 120 }).map((_, i) => ({
         id: i,
         left: Math.random() * 100,
         delay: Math.random() * 14,
-        duration: 8 + Math.random() * 15,
+        duration: 8 + Math.random() * 16,
         size: 8 + Math.random() * 24,
         type: i % 3 === 0 ? "diamond" : i % 3 === 1 ? "shard" : "snow",
-        opacity: 0.35 + Math.random() * 0.45,
+      })),
+    []
+  );
+
+  const eskimos = useMemo(
+    () =>
+      Array.from({ length: 18 }).map((_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        delay: Math.random() * 18,
+        duration: 15 + Math.random() * 18,
+        crop: `eskimo-crop-${(i % 8) + 1}`,
+        size: 74 + Math.random() * 42,
       })),
     []
   );
 
   return (
     <div className="blizzard" aria-hidden="true">
-      <img src={logoSrc} className="bg-logo bg-logo-one" alt="" />
-      <img src={logoSrc} className="bg-logo bg-logo-two" alt="" />
+      {eskimos.map((e) => (
+        <span
+          key={e.id}
+          className={`falling-eskimo ${e.crop}`}
+          style={{
+            left: `${e.left}%`,
+            width: `${e.size}px`,
+            height: `${e.size * 1.28}px`,
+            animationDelay: `${e.delay}s`,
+            animationDuration: `${e.duration}s`,
+          }}
+        />
+      ))}
 
       {particles.map((p) => (
         <span
@@ -46,7 +67,6 @@ function BlizzardBackground() {
             animationDuration: `${p.duration}s`,
             width: `${p.size}px`,
             height: `${p.size}px`,
-            opacity: p.opacity,
           }}
         />
       ))}
@@ -122,14 +142,26 @@ export default function Page() {
     <main>
       <BlizzardBackground />
 
-      <section className="hero">
-        <div className="hero-logo-frame">
-          <img src={logoSrc} alt="Top Eskimo logo" className="hero-logo" />
-        </div>
+      <header className="site-header">
+        <a href="#home" className="brand">
+          Top Eskimo
+        </a>
 
+        <nav className="top-tabs">
+          <a href="#contact">Contact Us</a>
+          <a href="#merchandise">Merchandise</a>
+          <a href="#designer">Designer Profile</a>
+        </nav>
+      </header>
+
+      <section id="home" className="hero">
         <h1>Be Bold. Be Ice Cold.</h1>
+        <p>
+          Luxury cold-weather streetwear built for the ones who know they are
+          the coldest around.
+        </p>
 
-        <div className="contact-row">
+        <div id="contact" className="contact-row">
           <a
             href="https://www.instagram.com/topeskimogang"
             target="_blank"
@@ -142,24 +174,27 @@ export default function Page() {
             </svg>
           </a>
 
-          <a href="tel:6302971679" aria-label="Call Top Eskimo" className="icon-link phone">
+          <a
+            href="tel:6302971679"
+            aria-label="Call Top Eskimo"
+            className="icon-link phone"
+          >
             📞
           </a>
         </div>
       </section>
 
-      <nav className="category-tabs">
-        {categories.map((cat) => (
-          <a key={cat} href="#shop">
-            {cat}
-          </a>
-        ))}
-      </nav>
+      <section className="logo-showcase">
+        <div className="hero-logo-frame">
+          <img src={logoSrc} alt="Top Eskimo logo styles" className="hero-logo" />
+        </div>
+      </section>
 
-      <section id="shop" className="shop-section">
-        <h2>Shop the Ice Collection</h2>
+      <section id="merchandise" className="shop-section">
+        <h2>Merchandise</h2>
         <p className="section-subtitle">
-          Choose your product, color, and size. Each selection freezes over before locking in.
+          Choose your product, color, and size. Each selection freezes over
+          before locking in.
         </p>
 
         <div className="product-grid">
@@ -169,18 +204,24 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="designer">
+      <section id="designer" className="designer">
         <h2>Designer Profile</h2>
         <p>
-          My name is Scott Schroer, and I am the founder of Top Eskimo. Have you ever felt that
-          you were the coldest around? Top Eskimo was built for the ones who move differently,
-          think boldly, and bring ice-cold energy wherever they go.
+          My name is Scott Schroer, and I am the founder of Top Eskimo. Have you
+          ever felt that you were the coldest around? Top Eskimo was built for
+          the ones who move differently, think boldly, and bring ice-cold energy
+          wherever they go.
         </p>
       </section>
 
       <style jsx global>{`
-        * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        * {
+          box-sizing: border-box;
+        }
+
+        html {
+          scroll-behavior: smooth;
+        }
 
         body {
           margin: 0;
@@ -188,7 +229,7 @@ export default function Page() {
           font-family: Arial, Helvetica, sans-serif;
           overflow-x: hidden;
           background:
-            linear-gradient(rgba(4, 20, 35, 0.72), rgba(4, 20, 35, 0.86)),
+            linear-gradient(rgba(4, 20, 35, 0.74), rgba(4, 20, 35, 0.9)),
             radial-gradient(circle at top, #bff4ff 0%, #4ba3c7 35%, #081827 100%);
         }
 
@@ -196,6 +237,56 @@ export default function Page() {
           position: relative;
           min-height: 100vh;
           overflow: hidden;
+        }
+
+        .site-header {
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 20px;
+          padding: 18px 32px;
+          background: rgba(4, 20, 35, 0.72);
+          backdrop-filter: blur(18px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+          box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        .brand {
+          color: #eaffff;
+          font-size: clamp(1.4rem, 3vw, 2.4rem);
+          font-weight: 900;
+          text-decoration: none;
+          letter-spacing: -1px;
+          text-shadow:
+            0 0 12px #8defff,
+            0 0 28px #49cfff;
+        }
+
+        .top-tabs {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          justify-content: flex-end;
+        }
+
+        .top-tabs a {
+          color: white;
+          text-decoration: none;
+          padding: 11px 16px;
+          border-radius: 999px;
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          background: rgba(255, 255, 255, 0.12);
+          box-shadow: 0 0 18px rgba(140, 230, 255, 0.2);
+          transition: 0.25s ease;
+        }
+
+        .top-tabs a:hover {
+          background: rgba(190, 245, 255, 0.24);
+          box-shadow: 0 0 28px rgba(180, 245, 255, 0.72);
+          transform: translateY(-2px);
         }
 
         .blizzard {
@@ -206,33 +297,6 @@ export default function Page() {
           overflow: hidden;
         }
 
-        .bg-logo {
-          position: absolute;
-          width: 520px;
-          max-width: 70vw;
-          opacity: 0.12;
-          filter: drop-shadow(0 0 35px rgba(150, 240, 255, 0.9));
-          animation: bgLogoFloat 11s ease-in-out infinite;
-        }
-
-        .bg-logo-one {
-          top: 8%;
-          left: -120px;
-          transform: rotate(-10deg);
-        }
-
-        .bg-logo-two {
-          bottom: 6%;
-          right: -130px;
-          transform: rotate(10deg);
-          animation-delay: 3s;
-        }
-
-        @keyframes bgLogoFloat {
-          0%, 100% { transform: translateY(0) scale(1) rotate(-8deg); }
-          50% { transform: translateY(-22px) scale(1.04) rotate(-3deg); }
-        }
-
         .particle {
           position: absolute;
           top: -80px;
@@ -240,6 +304,7 @@ export default function Page() {
           animation-timing-function: linear;
           animation-iteration-count: infinite;
           filter: drop-shadow(0 0 10px rgba(190, 245, 255, 0.9));
+          opacity: 0.72;
         }
 
         .snow {
@@ -260,74 +325,131 @@ export default function Page() {
           box-shadow: 0 0 16px rgba(150, 235, 255, 0.85);
         }
 
-        @keyframes fallAndDrift {
-          0% { transform: translate3d(0, -120px, 0) rotate(0deg); }
-          50% { transform: translate3d(55px, 50vh, 0) rotate(180deg); }
-          100% { transform: translate3d(-45px, 110vh, 0) rotate(360deg); }
+        .falling-eskimo {
+          position: absolute;
+          top: -180px;
+          background-image: url("${logoSrc}");
+          background-repeat: no-repeat;
+          background-size: 520px 760px;
+          animation-name: eskimoFall;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          opacity: 0.28;
+          filter:
+            drop-shadow(0 0 12px rgba(180, 245, 255, 0.75))
+            drop-shadow(0 0 24px rgba(80, 190, 255, 0.45));
+          border-radius: 18px;
         }
 
-        .hero, .category-tabs, .shop-section, .designer {
+        .eskimo-crop-1 {
+          background-position: -100px -80px;
+        }
+
+        .eskimo-crop-2 {
+          background-position: -70px -250px;
+        }
+
+        .eskimo-crop-3 {
+          background-position: -220px -250px;
+        }
+
+        .eskimo-crop-4 {
+          background-position: -370px -250px;
+        }
+
+        .eskimo-crop-5 {
+          background-position: -70px -420px;
+        }
+
+        .eskimo-crop-6 {
+          background-position: -220px -420px;
+        }
+
+        .eskimo-crop-7 {
+          background-position: -370px -420px;
+        }
+
+        .eskimo-crop-8 {
+          background-position: -220px -590px;
+        }
+
+        @keyframes fallAndDrift {
+          0% {
+            transform: translate3d(0, -120px, 0) rotate(0deg);
+          }
+          50% {
+            transform: translate3d(55px, 50vh, 0) rotate(180deg);
+          }
+          100% {
+            transform: translate3d(-45px, 110vh, 0) rotate(360deg);
+          }
+        }
+
+        @keyframes eskimoFall {
+          0% {
+            transform: translate3d(0, -220px, 0) rotate(-8deg) scale(0.9);
+          }
+          50% {
+            transform: translate3d(70px, 50vh, 0) rotate(8deg) scale(1);
+          }
+          100% {
+            transform: translate3d(-70px, 115vh, 0) rotate(-12deg) scale(0.92);
+          }
+        }
+
+        .hero,
+        .logo-showcase,
+        .shop-section,
+        .designer {
           position: relative;
           z-index: 2;
         }
 
         .hero {
-          min-height: 85vh;
+          min-height: 72vh;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           text-align: center;
-          padding: 80px 20px;
-        }
-
-        .hero-logo-frame {
-          width: min(780px, 94vw);
-          border-radius: 34px;
-          padding: 14px;
-          background: rgba(255, 255, 255, 0.12);
-          border: 1px solid rgba(255, 255, 255, 0.28);
-          backdrop-filter: blur(10px);
-          box-shadow: 0 0 55px rgba(130, 235, 255, 0.45);
-        }
-
-        .hero-logo {
-          width: 100%;
-          height: auto;
-          display: block;
-          border-radius: 24px;
-          filter: drop-shadow(0 0 25px rgba(160, 245, 255, 0.9));
-          animation: heroLogoFloat 5s ease-in-out infinite;
-        }
-
-        @keyframes heroLogoFloat {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
+          padding: 90px 20px 40px;
         }
 
         h1 {
-          font-size: clamp(2rem, 5vw, 4.5rem);
-          margin: 26px 0 14px;
-          text-shadow: 0 0 24px rgba(140, 235, 255, 0.9);
+          font-size: clamp(2.8rem, 8vw, 7rem);
+          margin: 0 0 18px;
+          color: #eaffff;
+          text-shadow:
+            0 0 12px #8defff,
+            0 0 32px #49cfff,
+            0 0 65px #0ea5e9;
+          letter-spacing: -3px;
+        }
+
+        .hero p {
+          max-width: 760px;
+          font-size: 1.2rem;
+          line-height: 1.7;
+          color: #e6fbff;
+          margin: 0 auto 24px;
         }
 
         .contact-row {
           display: flex;
-          flex-wrap: wrap;
           justify-content: center;
           gap: 18px;
           margin-top: 10px;
         }
 
         .icon-link {
-          width: 60px;
-          height: 60px;
+          width: 62px;
+          height: 62px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           border-radius: 999px;
           color: white;
-          font-size: 32px;
+          font-size: 33px;
           text-decoration: none;
           background: rgba(255, 255, 255, 0.15);
           border: 1px solid rgba(255, 255, 255, 0.4);
@@ -342,30 +464,32 @@ export default function Page() {
           box-shadow: 0 0 34px rgba(180, 245, 255, 0.85);
         }
 
-        .phone { line-height: 1; }
+        .phone {
+          line-height: 1;
+        }
 
-        .category-tabs {
+        .logo-showcase {
+          padding: 30px 20px 80px;
           display: flex;
           justify-content: center;
-          flex-wrap: wrap;
-          gap: 14px;
-          padding: 22px;
         }
 
-        .category-tabs a {
-          color: white;
-          text-decoration: none;
-          border: 1px solid rgba(255,255,255,0.35);
-          background: rgba(255,255,255,0.12);
+        .hero-logo-frame {
+          width: min(760px, 94vw);
+          border-radius: 34px;
+          padding: 14px;
+          background: rgba(255, 255, 255, 0.12);
+          border: 1px solid rgba(255, 255, 255, 0.28);
           backdrop-filter: blur(10px);
-          padding: 12px 18px;
-          border-radius: 999px;
-          box-shadow: 0 0 20px rgba(140,230,255,0.25);
+          box-shadow: 0 0 55px rgba(130, 235, 255, 0.45);
         }
 
-        .category-tabs a:hover {
-          background: rgba(170,240,255,0.25);
-          box-shadow: 0 0 28px rgba(170,240,255,0.6);
+        .hero-logo {
+          width: 100%;
+          height: auto;
+          display: block;
+          border-radius: 24px;
+          filter: drop-shadow(0 0 25px rgba(160, 245, 255, 0.9));
         }
 
         .shop-section {
@@ -373,7 +497,8 @@ export default function Page() {
           text-align: center;
         }
 
-        .shop-section h2, .designer h2 {
+        .shop-section h2,
+        .designer h2 {
           font-size: clamp(2.2rem, 5vw, 4rem);
           margin-bottom: 12px;
         }
@@ -394,39 +519,50 @@ export default function Page() {
         }
 
         .product-card {
-          border: 1px solid rgba(255,255,255,0.28);
-          background: rgba(5,25,42,0.78);
+          border: 1px solid rgba(255, 255, 255, 0.28);
+          background: rgba(5, 25, 42, 0.8);
           backdrop-filter: blur(16px);
           border-radius: 28px;
           padding: 22px;
-          box-shadow: inset 0 0 24px rgba(255,255,255,0.08), 0 20px 55px rgba(0,0,0,0.38);
+          box-shadow:
+            inset 0 0 24px rgba(255, 255, 255, 0.08),
+            0 20px 55px rgba(0, 0, 0, 0.38);
         }
 
         .product-window {
           height: 260px;
           border-radius: 24px;
           background:
-            radial-gradient(circle at top, rgba(255,255,255,0.55), transparent 35%),
+            radial-gradient(circle at top, rgba(255, 255, 255, 0.55), transparent 35%),
             linear-gradient(145deg, #dffbff, #75d9f4 45%, #10324d);
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
           position: relative;
-          border: 1px solid rgba(255,255,255,0.55);
+          border: 1px solid rgba(255, 255, 255, 0.55);
         }
 
         .shirt-shape {
           width: 150px;
           height: 170px;
           background: linear-gradient(180deg, #ffffff, #b8f4ff);
-          clip-path: polygon(25% 0%,75% 0%,100% 25%,82% 42%,82% 100%,18% 100%,18% 42%,0% 25%);
+          clip-path: polygon(
+            25% 0%,
+            75% 0%,
+            100% 25%,
+            82% 42%,
+            82% 100%,
+            18% 100%,
+            18% 42%,
+            0% 25%
+          );
           display: flex;
           align-items: center;
           justify-content: center;
           color: #12364a;
           font-weight: 900;
-          box-shadow: 0 0 35px rgba(255,255,255,0.85);
+          box-shadow: 0 0 35px rgba(255, 255, 255, 0.85);
         }
 
         .freeze::after {
@@ -434,15 +570,24 @@ export default function Page() {
           position: absolute;
           inset: 0;
           background:
-            linear-gradient(135deg, transparent, rgba(255,255,255,0.9), transparent),
-            radial-gradient(circle, rgba(230,255,255,0.95), rgba(110,220,255,0.45), transparent);
+            linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.9), transparent),
+            radial-gradient(circle, rgba(230, 255, 255, 0.95), rgba(110, 220, 255, 0.45), transparent);
           animation: iceFlash 0.8s ease forwards;
         }
 
         @keyframes iceFlash {
-          0% { opacity: 0; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1.05); }
-          100% { opacity: 0; transform: scale(1.25); }
+          0% {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.05);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(1.25);
+          }
         }
 
         .option-group {
@@ -462,20 +607,22 @@ export default function Page() {
           gap: 8px;
         }
 
-        .option-row button, .cart-button {
+        .option-row button,
+        .cart-button {
           cursor: pointer;
-          border: 1px solid rgba(255,255,255,0.35);
-          background: rgba(255,255,255,0.11);
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          background: rgba(255, 255, 255, 0.11);
           color: white;
           padding: 9px 12px;
           border-radius: 999px;
           transition: 0.25s ease;
         }
 
-        .option-row button:hover, .option-row button.active {
+        .option-row button:hover,
+        .option-row button.active {
           background: #c7f7ff;
           color: #082436;
-          box-shadow: 0 0 18px rgba(190,250,255,0.85);
+          box-shadow: 0 0 18px rgba(190, 250, 255, 0.85);
         }
 
         .selected {
@@ -490,12 +637,12 @@ export default function Page() {
           font-weight: 900;
           background: linear-gradient(135deg, #dffbff, #5ed8ff);
           color: #082436;
-          box-shadow: 0 0 20px rgba(130,235,255,0.45);
+          box-shadow: 0 0 20px rgba(130, 235, 255, 0.45);
         }
 
         .cart-button:hover {
           transform: translateY(-2px);
-          box-shadow: 0 0 32px rgba(160,245,255,0.85);
+          box-shadow: 0 0 32px rgba(160, 245, 255, 0.85);
         }
 
         .designer {
@@ -504,10 +651,10 @@ export default function Page() {
           padding: 50px 28px;
           border-radius: 32px;
           text-align: center;
-          background: rgba(5,25,42,0.78);
-          border: 1px solid rgba(255,255,255,0.22);
+          background: rgba(5, 25, 42, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.22);
           backdrop-filter: blur(16px);
-          box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
         }
 
         .designer p {
@@ -516,10 +663,33 @@ export default function Page() {
           color: #e4fbff;
         }
 
-        @media (max-width: 700px) {
-          .hero { padding-top: 60px; }
-          .product-window { height: 230px; }
-          .bg-logo { width: 360px; opacity: 0.08; }
+        @media (max-width: 760px) {
+          .site-header {
+            flex-direction: column;
+            padding: 16px;
+          }
+
+          .top-tabs {
+            justify-content: center;
+          }
+
+          .hero {
+            min-height: 68vh;
+            padding-top: 70px;
+          }
+
+          h1 {
+            letter-spacing: -1px;
+          }
+
+          .product-window {
+            height: 230px;
+          }
+
+          .falling-eskimo {
+            opacity: 0.2;
+            background-size: 420px 615px;
+          }
         }
       `}</style>
     </main>
