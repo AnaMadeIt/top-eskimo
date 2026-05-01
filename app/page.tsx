@@ -27,6 +27,15 @@ const products = [
 const colors = ["Ice Blue", "Black Ice", "Snow White", "Glacier Gray"];
 const sizes = ["S", "M", "L", "XL", "XXL"];
 
+function InstagramLogo() {
+  return (
+    <span className="instagram-logo">
+      <span className="instagram-lens" />
+      <span className="instagram-dot" />
+    </span>
+  );
+}
+
 function BlizzardBackground() {
   const particles = useMemo(
     () =>
@@ -43,13 +52,13 @@ function BlizzardBackground() {
 
   const fallingEskimos = useMemo(
     () =>
-      Array.from({ length: 24 }).map((_, i) => ({
+      Array.from({ length: 28 }).map((_, i) => ({
         id: i,
         src: eskimoLogoFiles[i % eskimoLogoFiles.length],
         left: Math.random() * 100,
         delay: Math.random() * 20,
-        duration: 14 + Math.random() * 20,
-        size: 54 + Math.random() * 46,
+        duration: 14 + Math.random() * 22,
+        size: 58 + Math.random() * 50,
       })),
     []
   );
@@ -157,9 +166,31 @@ export default function Page() {
       <BlizzardBackground />
 
       <header className="site-header">
-        <a href="#home" className="brand">
-          Top Eskimo
-        </a>
+        <div className="header-left">
+          <a href="#home" className="brand">
+            Top Eskimo
+          </a>
+
+          <div className="header-icons">
+            <a
+              href="https://www.instagram.com/topeskimogang"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit Top Eskimo Instagram"
+              className="mini-icon-link"
+            >
+              <InstagramLogo />
+            </a>
+
+            <a
+              href="tel:6302971679"
+              aria-label="Call Top Eskimo"
+              className="mini-icon-link phone-mini"
+            >
+              📞
+            </a>
+          </div>
+        </div>
 
         <nav className="top-tabs">
           <a href="#contact">Contact Us</a>
@@ -183,10 +214,7 @@ export default function Page() {
             aria-label="Visit Top Eskimo Instagram"
             className="instagram-logo-link"
           >
-            <span className="instagram-logo">
-              <span className="instagram-lens" />
-              <span className="instagram-dot" />
-            </span>
+            <InstagramLogo />
           </a>
 
           <a
@@ -269,6 +297,12 @@ export default function Page() {
           box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
         }
 
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 18px;
+        }
+
         .brand {
           color: #eaffff;
           font-size: clamp(1.4rem, 3vw, 2.4rem);
@@ -278,6 +312,38 @@ export default function Page() {
           text-shadow:
             0 0 12px #8defff,
             0 0 28px #49cfff;
+        }
+
+        .header-icons {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .mini-icon-link {
+          width: 42px;
+          height: 42px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 999px;
+          color: white;
+          text-decoration: none;
+          background: rgba(255, 255, 255, 0.13);
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          backdrop-filter: blur(12px);
+          box-shadow: 0 0 18px rgba(150, 235, 255, 0.32);
+          transition: 0.25s ease;
+        }
+
+        .mini-icon-link:hover {
+          transform: translateY(-2px) scale(1.08);
+          background: rgba(190, 245, 255, 0.24);
+          box-shadow: 0 0 28px rgba(180, 245, 255, 0.85);
+        }
+
+        .phone-mini {
+          font-size: 22px;
         }
 
         .top-tabs {
@@ -347,7 +413,7 @@ export default function Page() {
           animation-name: eskimoFall;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
-          opacity: 0.42;
+          opacity: 0.48;
           filter:
             drop-shadow(0 0 10px rgba(255, 255, 255, 0.95))
             drop-shadow(0 0 22px rgba(80, 210, 255, 0.8));
@@ -372,11 +438,11 @@ export default function Page() {
             opacity: 0;
           }
           10% {
-            opacity: 0.42;
+            opacity: 0.48;
           }
           50% {
             transform: translate3d(85px, 50vh, 0) rotate(10deg) scale(1);
-            opacity: 0.46;
+            opacity: 0.54;
           }
           100% {
             transform: translate3d(-85px, 118vh, 0) rotate(-14deg) scale(0.92);
@@ -493,6 +559,33 @@ export default function Page() {
           background: white;
           right: 9px;
           top: 9px;
+        }
+
+        .mini-icon-link .instagram-logo {
+          width: 25px;
+          height: 25px;
+          border-radius: 8px;
+        }
+
+        .mini-icon-link .instagram-logo::before {
+          inset: 6px;
+          border-width: 2px;
+          border-radius: 7px;
+        }
+
+        .mini-icon-link .instagram-lens {
+          width: 7px;
+          height: 7px;
+          border-width: 2px;
+          left: 9px;
+          top: 9px;
+        }
+
+        .mini-icon-link .instagram-dot {
+          width: 4px;
+          height: 4px;
+          right: 6px;
+          top: 6px;
         }
 
         .phone {
@@ -700,6 +793,11 @@ export default function Page() {
             padding: 16px;
           }
 
+          .header-left {
+            flex-direction: column;
+            gap: 10px;
+          }
+
           .top-tabs {
             justify-content: center;
           }
@@ -718,7 +816,7 @@ export default function Page() {
           }
 
           .falling-eskimo {
-            opacity: 0.34;
+            opacity: 0.4;
           }
         }
       `}</style>
