@@ -41,22 +41,22 @@ function BlizzardBackground() {
     []
   );
 
-  const eskimos = useMemo(
+  const fallingEskimos = useMemo(
     () =>
-      Array.from({ length: 20 }).map((_, i) => ({
+      Array.from({ length: 24 }).map((_, i) => ({
         id: i,
         src: eskimoLogoFiles[i % eskimoLogoFiles.length],
         left: Math.random() * 100,
-        delay: Math.random() * 18,
-        duration: 16 + Math.random() * 20,
-        size: 46 + Math.random() * 34,
+        delay: Math.random() * 20,
+        duration: 14 + Math.random() * 20,
+        size: 54 + Math.random() * 46,
       })),
     []
   );
 
   return (
     <div className="blizzard" aria-hidden="true">
-      {eskimos.map((e) => (
+      {fallingEskimos.map((e) => (
         <img
           key={e.id}
           src={e.src}
@@ -181,11 +181,12 @@ export default function Page() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Visit Top Eskimo Instagram"
-            className="icon-link"
+            className="instagram-logo-link"
           >
-            <svg viewBox="0 0 24 24" width="34" height="34" fill="currentColor">
-              <path d="M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5V7c0-2.8-2.2-5-5-5H7zm10 2c1.7 0 3 1.3 3 3v10c0 1.7-1.3 3-3 3H7c-1.7 0-3-1.3-3-3V7c0-1.7 1.3-3 3-3h10zm-5 3.5A4.5 4.5 0 1 0 12 16.5 4.5 4.5 0 0 0 12 7.5zm0 2A2.5 2.5 0 1 1 9.5 12 2.5 2.5 0 0 1 12 9.5zm4.8-2.4a1.1 1.1 0 1 0 1.1 1.1 1.1 1.1 0 0 0-1.1-1.1z" />
-            </svg>
+            <span className="instagram-logo">
+              <span className="instagram-lens" />
+              <span className="instagram-dot" />
+            </span>
           </a>
 
           <a
@@ -341,15 +342,16 @@ export default function Page() {
 
         .falling-eskimo {
           position: absolute;
-          top: -180px;
+          top: -160px;
           height: auto;
           animation-name: eskimoFall;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
-          opacity: 0.23;
+          opacity: 0.42;
           filter:
-            drop-shadow(0 0 12px rgba(180, 245, 255, 0.75))
-            drop-shadow(0 0 24px rgba(80, 190, 255, 0.45));
+            drop-shadow(0 0 10px rgba(255, 255, 255, 0.95))
+            drop-shadow(0 0 22px rgba(80, 210, 255, 0.8));
+          z-index: 1;
         }
 
         @keyframes fallAndDrift {
@@ -366,17 +368,18 @@ export default function Page() {
 
         @keyframes eskimoFall {
           0% {
-            transform: translate3d(0, -220px, 0) rotate(-8deg) scale(0.9);
+            transform: translate3d(0, -220px, 0) rotate(-12deg) scale(0.86);
             opacity: 0;
           }
-          12% {
-            opacity: 0.23;
+          10% {
+            opacity: 0.42;
           }
           50% {
-            transform: translate3d(70px, 50vh, 0) rotate(8deg) scale(1);
+            transform: translate3d(85px, 50vh, 0) rotate(10deg) scale(1);
+            opacity: 0.46;
           }
           100% {
-            transform: translate3d(-70px, 115vh, 0) rotate(-12deg) scale(0.92);
+            transform: translate3d(-85px, 118vh, 0) rotate(-14deg) scale(0.92);
             opacity: 0;
           }
         }
@@ -425,7 +428,8 @@ export default function Page() {
           margin-top: 10px;
         }
 
-        .icon-link {
+        .icon-link,
+        .instagram-logo-link {
           width: 62px;
           height: 62px;
           display: inline-flex;
@@ -442,10 +446,53 @@ export default function Page() {
           transition: 0.25s ease;
         }
 
-        .icon-link:hover {
+        .icon-link:hover,
+        .instagram-logo-link:hover {
           transform: translateY(-3px) scale(1.08);
           background: rgba(190, 245, 255, 0.24);
           box-shadow: 0 0 34px rgba(180, 245, 255, 0.85);
+        }
+
+        .instagram-logo {
+          width: 36px;
+          height: 36px;
+          border-radius: 11px;
+          position: relative;
+          display: inline-block;
+          background:
+            radial-gradient(circle at 30% 105%, #fdf497 0%, #fdf497 14%, transparent 30%),
+            radial-gradient(circle at 30% 105%, #fd5949 0%, #fd5949 32%, transparent 48%),
+            radial-gradient(circle at 70% 20%, #d6249f 0%, #d6249f 32%, transparent 52%),
+            linear-gradient(135deg, #285aeb 0%, #8134af 45%, #dd2a7b 70%, #feda75 100%);
+          box-shadow: 0 0 18px rgba(255, 255, 255, 0.55);
+        }
+
+        .instagram-logo::before {
+          content: "";
+          position: absolute;
+          inset: 8px;
+          border: 3px solid white;
+          border-radius: 9px;
+        }
+
+        .instagram-lens {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          border: 3px solid white;
+          border-radius: 999px;
+          left: 13px;
+          top: 13px;
+        }
+
+        .instagram-dot {
+          position: absolute;
+          width: 5px;
+          height: 5px;
+          border-radius: 999px;
+          background: white;
+          right: 9px;
+          top: 9px;
         }
 
         .phone {
@@ -671,7 +718,7 @@ export default function Page() {
           }
 
           .falling-eskimo {
-            opacity: 0.18;
+            opacity: 0.34;
           }
         }
       `}</style>
