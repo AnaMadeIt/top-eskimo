@@ -2,706 +2,516 @@
 
 import { useMemo, useState } from "react";
 
-type ColorOption = {
-  name: string;
-  hex: string;
-};
+const categories = ["Men’s", "Women’s", "T-Shirts", "Sweatshirts", "Sweatpants"];
 
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  category: string;
-  description: string;
-  image: string;
-  sizes: string[];
-  colors: ColorOption[];
-};
-
-type SelectionState = {
-  colorIndex: number;
-  size: string;
-  freezeKey: number;
-};
-
-const products: Product[] = [
-  {
-    id: 1,
-    name: "Ice Savant !$",
-    price: 58,
-    category: "T-Shirts",
-    description:
-      "A cold luxury statement tee with sharp graphics and an icy visual identity.",
-    image: "/merch/ice-savant-tee.png",
-    sizes: ["S", "M", "L", "XL"],
-    colors: [
-      { name: "Arctic White", hex: "#f7fbff" },
-      { name: "Glacier Blue", hex: "#b7dcff" },
-      { name: "Black Ice", hex: "#243447" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Arctic Logo Hoodie",
-    price: 95,
-    category: "Hoodies",
-    description:
-      "Heavyweight hoodie with premium comfort and a frozen streetwear edge.",
-    image: "/merch/arctic-hoodie.png",
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: [
-      { name: "Snow", hex: "#f8fbff" },
-      { name: "Ice Blue", hex: "#8fd0ff" },
-      { name: "Midnight Frost", hex: "#1f2e40" },
-    ],
-  },
-  {
-    id: 3,
-    name: "Glacier Puff Jacket",
-    price: 180,
-    category: "Outerwear",
-    description:
-      "Statement outerwear with bold frozen volume and premium cold-weather styling.",
-    image: "/merch/glacier-jacket.png",
-    sizes: ["M", "L", "XL"],
-    colors: [
-      { name: "Polar White", hex: "#f5fbff" },
-      { name: "Frozen Silver", hex: "#c8d8e8" },
-      { name: "Deep Navy", hex: "#28445f" },
-    ],
-  },
-  {
-    id: 4,
-    name: "Frost Sweat Set",
-    price: 135,
-    category: "Sweats",
-    description:
-      "Luxury sweats with a clean icy palette and a strong branded presence.",
-    image: "/merch/frost-sweats.png",
-    sizes: ["S", "M", "L", "XL"],
-    colors: [
-      { name: "Cloud", hex: "#eef6ff" },
-      { name: "Blue Mist", hex: "#b7dfff" },
-      { name: "Steel Ice", hex: "#64788d" },
-    ],
-  },
+const products = [
+  { name: "Ice Savant !$", type: "T-Shirt", price: "$45" },
+  { name: "Frozen Standard Tee", type: "T-Shirt", price: "$40" },
+  { name: "Cold Front Hoodie", type: "Sweatshirt", price: "$75" },
+  { name: "Below Zero Sweats", type: "Sweatpants", price: "$65" },
 ];
 
-const blizzardItems = [
-  { left: "3%", delay: "0s", duration: "18s", size: 18, type: "snow" },
-  { left: "8%", delay: "2s", duration: "21s", size: 12, type: "diamond" },
-  { left: "14%", delay: "5s", duration: "17s", size: 22, type: "shard" },
-  { left: "19%", delay: "1s", duration: "20s", size: 14, type: "snow" },
-  { left: "25%", delay: "3s", duration: "22s", size: 20, type: "diamond" },
-  { left: "31%", delay: "6s", duration: "16s", size: 24, type: "shard" },
-  { left: "38%", delay: "2.5s", duration: "19s", size: 13, type: "snow" },
-  { left: "44%", delay: "4.5s", duration: "23s", size: 17, type: "diamond" },
-  { left: "50%", delay: "0.5s", duration: "18s", size: 26, type: "shard" },
-  { left: "57%", delay: "7s", duration: "21s", size: 15, type: "snow" },
-  { left: "63%", delay: "1.5s", duration: "20s", size: 19, type: "diamond" },
-  { left: "69%", delay: "5.5s", duration: "17s", size: 23, type: "shard" },
-  { left: "74%", delay: "3.2s", duration: "24s", size: 14, type: "snow" },
-  { left: "81%", delay: "6.2s", duration: "18s", size: 18, type: "diamond" },
-  { left: "87%", delay: "2.2s", duration: "22s", size: 21, type: "shard" },
-  { left: "93%", delay: "4.2s", duration: "19s", size: 12, type: "snow" },
-];
+const colors = ["Ice Blue", "Black Ice", "Snow White", "Glacier Gray"];
+const sizes = ["S", "M", "L", "XL", "XXL"];
 
 function BlizzardBackground() {
-  return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(180,225,255,0.58),_rgba(238,248,255,0.95)_40%,_rgba(238,248,255,1)_75%)]" />
-      <div className="absolute inset-0 bg-[url('/ice-bg.png')] bg-cover bg-center opacity-20" />
-
-      <div className="absolute inset-0 opacity-[0.34]">
-        {blizzardItems.map((item, index) => (
-          <span
-            key={`${item.left}-${index}`}
-            className={`blizzard-item ${item.type}`}
-            style={{
-              left: item.left,
-              animationDelay: item.delay,
-              animationDuration: item.duration,
-              width: `${item.size}px`,
-              height: `${item.size}px`,
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0)_20%,rgba(255,255,255,0)_80%,rgba(255,255,255,0.08))]" />
-    </div>
-  );
-}
-
-function ProductCard({
-  product,
-  selection,
-  quantity,
-  onSelectColor,
-  onSelectSize,
-  onAddToCart,
-}: {
-  product: Product;
-  selection: SelectionState;
-  quantity: number;
-  onSelectColor: (productId: number, colorIndex: number) => void;
-  onSelectSize: (productId: number, size: string) => void;
-  onAddToCart: (productId: number) => void;
-}) {
-  const activeColor = product.colors[selection.colorIndex];
+  const particles = useMemo(() => {
+    return Array.from({ length: 95 }).map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      delay: Math.random() * 12,
+      duration: 8 + Math.random() * 14,
+      size: 8 + Math.random() * 24,
+      type: i % 3 === 0 ? "diamond" : i % 3 === 1 ? "shard" : "snow",
+      opacity: 0.35 + Math.random() * 0.45,
+    }));
+  }, []);
 
   return (
-    <div className="rounded-[2rem] border border-sky-100 bg-white/90 p-6 shadow-[0_12px_40px_rgba(110,170,220,0.12)] transition hover:-translate-y-1">
-      <div className="mb-5 inline-flex rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#1a73c9]">
-        {product.category}
-      </div>
-
-      <div className="relative overflow-hidden rounded-[1.6rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(240,249,255,0.96),rgba(255,255,255,0.98))] p-4 shadow-inner">
-        <div
-          key={selection.freezeKey}
-          className="relative flex h-[260px] items-center justify-center overflow-hidden rounded-[1.2rem]"
+    <div className="blizzard" aria-hidden="true">
+      {particles.map((p) => (
+        <span
+          key={p.id}
+          className={`particle ${p.type}`}
           style={{
-            background: `radial-gradient(circle at top, ${activeColor.hex}55, rgba(255,255,255,0.95) 58%)`,
+            left: `${p.left}%`,
+            animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            opacity: p.opacity,
           }}
-        >
-          <div className="frost-burst pointer-events-none absolute inset-0" />
-          <img
-            src={product.image}
-            alt={product.name}
-            className="relative z-10 max-h-[220px] w-auto object-contain drop-shadow-[0_20px_30px_rgba(120,170,220,0.2)]"
-          />
-        </div>
-      </div>
-
-      <div className="mt-6 flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-2xl font-bold text-slate-800">{product.name}</h3>
-          <p className="mt-3 text-sm leading-7 text-slate-600">
-            {product.description}
-          </p>
-        </div>
-        <span className="whitespace-nowrap text-xl font-black text-[#1a73c9]">
-          ${product.price}
-        </span>
-      </div>
-
-      <div className="mt-6">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
-          Color
-        </p>
-        <div className="flex flex-wrap gap-3">
-          {product.colors.map((color, index) => {
-            const active = selection.colorIndex === index;
-            return (
-              <button
-                key={color.name}
-                type="button"
-                onClick={() => onSelectColor(product.id, index)}
-                className={`flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition ${
-                  active
-                    ? "border-sky-400 bg-sky-50 text-[#1a73c9]"
-                    : "border-sky-100 bg-white text-slate-700 hover:border-sky-300"
-                }`}
-              >
-                <span
-                  className="h-4 w-4 rounded-full border border-slate-200"
-                  style={{ backgroundColor: color.hex }}
-                />
-                {color.name}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="mt-6">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
-          Size
-        </p>
-        <div className="flex flex-wrap gap-3">
-          {product.sizes.map((size) => {
-            const active = selection.size === size;
-            return (
-              <button
-                key={size}
-                type="button"
-                onClick={() => onSelectSize(product.id, size)}
-                className={`min-w-[56px] rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                  active
-                    ? "border-sky-400 bg-[#1a73c9] text-white"
-                    : "border-sky-100 bg-white text-slate-700 hover:border-sky-300"
-                }`}
-              >
-                {size}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="mt-7 flex items-center justify-between gap-3">
-        <div className="text-sm text-slate-500">
-          <div>
-            Selected:{" "}
-            <span className="font-semibold text-slate-700">{activeColor.name}</span>
-          </div>
-          <div>
-            Size:{" "}
-            <span className="font-semibold text-slate-700">{selection.size}</span>
-          </div>
-        </div>
-
-        <button
-          onClick={() => onAddToCart(product.id)}
-          className="rounded-full bg-[#1a73c9] px-5 py-3 text-sm font-semibold text-white transition hover:scale-[1.02]"
-        >
-          Add to Cart
-        </button>
-      </div>
-
-      {quantity > 0 ? (
-        <p className="mt-4 text-sm font-medium text-sky-700">Added: {quantity}</p>
-      ) : null}
+        />
+      ))}
     </div>
   );
 }
 
-export default function HomePage() {
-  const [cart, setCart] = useState<Record<number, number>>({});
-  const [selections, setSelections] = useState<Record<number, SelectionState>>(() =>
-    Object.fromEntries(
-      products.map((product) => [
-        product.id,
-        {
-          colorIndex: 0,
-          size: product.sizes[0],
-          freezeKey: 0,
-        },
-      ])
-    )
-  );
+function ProductCard({ product }: { product: (typeof products)[0] }) {
+  const [color, setColor] = useState(colors[0]);
+  const [size, setSize] = useState(sizes[1]);
+  const [freezing, setFreezing] = useState(false);
 
-  const addToCart = (id: number) => {
-    setCart((prev) => ({
-      ...prev,
-      [id]: (prev[id] || 0) + 1,
-    }));
+  const freezeChange = (callback: () => void) => {
+    setFreezing(true);
+    setTimeout(() => {
+      callback();
+      setTimeout(() => setFreezing(false), 450);
+    }, 350);
   };
-
-  const updateSelection = (
-    productId: number,
-    updater: (current: SelectionState) => SelectionState
-  ) => {
-    setSelections((prev) => ({
-      ...prev,
-      [productId]: updater(prev[productId]),
-    }));
-  };
-
-  const selectColor = (productId: number, colorIndex: number) => {
-    updateSelection(productId, (current) => ({
-      ...current,
-      colorIndex,
-      freezeKey: current.freezeKey + 1,
-    }));
-  };
-
-  const selectSize = (productId: number, size: string) => {
-    updateSelection(productId, (current) => ({
-      ...current,
-      size,
-      freezeKey: current.freezeKey + 1,
-    }));
-  };
-
-  const cartCount = useMemo(
-    () => Object.values(cart).reduce((sum, qty) => sum + qty, 0),
-    [cart]
-  );
 
   return (
-    <main className="min-h-screen bg-[#eef8ff] text-slate-900">
+    <div className="product-card">
+      <div className={`product-window ${freezing ? "freeze" : ""}`}>
+        <div className="shirt-shape">
+          <span>{product.type}</span>
+        </div>
+      </div>
+
+      <h3>{product.name}</h3>
+      <p>{product.price}</p>
+
+      <div className="option-group">
+        <strong>Color</strong>
+        <div className="option-row">
+          {colors.map((c) => (
+            <button
+              key={c}
+              className={color === c ? "active" : ""}
+              onClick={() => freezeChange(() => setColor(c))}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="option-group">
+        <strong>Size</strong>
+        <div className="option-row">
+          {sizes.map((s) => (
+            <button
+              key={s}
+              className={size === s ? "active" : ""}
+              onClick={() => freezeChange(() => setSize(s))}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="selected">
+        Selected: {color} / {size}
+      </div>
+
+      <button className="cart-button">Add to Frozen Cart</button>
+    </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <main>
       <BlizzardBackground />
 
-      <header className="border-b border-sky-100 bg-white/82 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a
-            href="#home"
-            className="text-3xl font-black tracking-[0.35em] text-[#1a73c9]"
-          >
-            TOP ESKIMO
+      <section className="hero">
+        <div className="logo-glow">Top Eskimo</div>
+        <h1>Be Bold. Be Ice Cold.</h1>
+        <p>
+          Luxury cold-weather streetwear designed for those who know they are
+          the coldest around.
+        </p>
+
+        <div className="contact-row">
+          <a href="https://www.instagram.com/topeskimogang" target="_blank">
+            Instagram: @topeskimogang
           </a>
-
-          <nav className="hidden gap-8 text-sm font-medium text-slate-700 md:flex">
-            <a href="#home" className="transition hover:text-[#1a73c9]">
-              Home
-            </a>
-            <a href="#shop" className="transition hover:text-[#1a73c9]">
-              Shop
-            </a>
-            <a href="#lookbook" className="transition hover:text-[#1a73c9]">
-              Lookbook
-            </a>
-            <a href="#logos" className="transition hover:text-[#1a73c9]">
-              Logo Styles
-            </a>
-            <a href="#designer" className="transition hover:text-[#1a73c9]">
-              Designer Profile
-            </a>
-            <a href="#about" className="transition hover:text-[#1a73c9]">
-              About
-            </a>
-            <a href="#contact" className="transition hover:text-[#1a73c9]">
-              Contact
-            </a>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <div className="rounded-full border border-sky-200 bg-white px-4 py-2 text-sm font-semibold text-[#1a73c9] shadow-sm">
-              Cart ({cartCount})
-            </div>
-            <a
-              href="#shop"
-              className="rounded-full border border-sky-400 px-6 py-3 text-sm font-semibold text-[#1a73c9] transition hover:bg-sky-50"
-            >
-              Shop Now
-            </a>
-          </div>
-        </div>
-      </header>
-
-      <section
-        id="home"
-        className="relative overflow-hidden px-6 pb-16 pt-14 md:pb-24 md:pt-20"
-      >
-        <div className="mx-auto max-w-7xl">
-          <div className="relative overflow-hidden rounded-[3rem] border border-white/70 bg-white/60 px-6 py-16 shadow-[0_25px_80px_rgba(80,150,220,0.18)] backdrop-blur-sm md:px-14 md:py-24">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(220,245,255,0.95),_rgba(255,255,255,0.45)_60%)]" />
-
-            <div className="relative z-10 text-center">
-              <p className="mb-6 text-sm font-bold uppercase tracking-[0.6em] text-[#1a73c9]">
-                Be Bold, Be Ice Cold
-              </p>
-
-              <div className="mx-auto max-w-5xl">
-                <h1 className="logo-shimmer text-5xl font-black uppercase tracking-[0.22em] text-transparent md:text-7xl">
-                  TOP ESKIMO
-                </h1>
-              </div>
-
-              <p className="mx-auto mt-8 max-w-3xl text-base leading-8 text-slate-600 md:text-lg">
-                An icy luxury streetwear brand built to stand out. Bold silhouettes,
-                frozen attitude, premium style.
-              </p>
-
-              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <a
-                  href="#shop"
-                  className="rounded-full bg-[#1a73c9] px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-sky-200 transition hover:scale-[1.02]"
-                >
-                  View Collection
-                </a>
-                <a
-                  href="#designer"
-                  className="rounded-full border border-sky-300 bg-white/70 px-8 py-4 text-sm font-semibold text-[#1a73c9] transition hover:bg-white"
-                >
-                  Meet the Designer
-                </a>
-              </div>
-            </div>
-          </div>
+          <a href="tel:6302971679">📞 630-297-1679</a>
         </div>
       </section>
 
-      <section id="logos" className="px-6 py-10 md:py-16">
-        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/82 p-6 shadow-[0_18px_60px_rgba(100,170,220,0.14)] backdrop-blur-sm md:p-10">
-          <div className="mb-8 text-center">
-            <p className="text-sm font-bold uppercase tracking-[0.5em] text-[#1a73c9]">
-              Logo Collection
-            </p>
-            <h2 className="mt-4 text-3xl font-bold text-slate-800 md:text-4xl">
-              Top Eskimo logo collection
-            </h2>
-          </div>
+      <nav className="category-tabs">
+        {categories.map((cat) => (
+          <a key={cat} href="#shop">
+            {cat}
+          </a>
+        ))}
+      </nav>
 
-          <div className="relative mx-auto flex min-h-[420px] max-w-4xl items-center justify-center overflow-hidden rounded-[2rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(238,248,255,0.95),rgba(255,255,255,0.92))] p-6 md:min-h-[560px]">
-            <img
-              src="/logos/Top%20Eskimo%20in%20snowy%20winterland.png"
-              alt="Top Eskimo logo collection"
-              className="h-auto max-h-[520px] w-full rounded-[1.5rem] object-contain"
-            />
-          </div>
+      <section id="shop" className="shop-section">
+        <h2>Shop the Ice Collection</h2>
+        <p className="section-subtitle">
+          Choose your product, color, and size. Each selection freezes over
+          before locking in your custom choice.
+        </p>
+
+        <div className="product-grid">
+          {products.map((product) => (
+            <ProductCard key={product.name} product={product} />
+          ))}
         </div>
       </section>
 
-      <section id="shop" className="px-6 py-10 md:py-16">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-10 text-center">
-            <p className="text-sm font-bold uppercase tracking-[0.5em] text-[#1a73c9]">
-              Shop
-            </p>
-            <h2 className="mt-4 text-3xl font-bold text-slate-800 md:text-4xl">
-              Signature cold-weather streetwear
-            </h2>
-            <p className="mx-auto mt-5 max-w-3xl leading-8 text-slate-600">
-              Customers can click color and size options, and the merchandise image
-              flashes with a quick icy freeze effect before settling into the new
-              selection.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                selection={selections[product.id]}
-                quantity={cart[product.id] || 0}
-                onSelectColor={selectColor}
-                onSelectSize={selectSize}
-                onAddToCart={addToCart}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="lookbook" className="px-6 py-10 md:py-16">
-        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/82 p-8 shadow-[0_18px_60px_rgba(100,170,220,0.14)] backdrop-blur-sm">
-          <div className="text-center">
-            <p className="text-sm font-bold uppercase tracking-[0.5em] text-[#1a73c9]">
-              Lookbook
-            </p>
-            <h2 className="mt-4 text-3xl font-bold text-slate-800 md:text-4xl">
-              Frozen luxury meets streetwear edge
-            </h2>
-            <p className="mx-auto mt-6 max-w-3xl leading-8 text-slate-600">
-              Top Eskimo is built around standout visuals, premium styling, and a
-              cold elevated identity. Every piece is meant to feel sharp, rare, and
-              unmistakably bold.
-            </p>
-          </div>
-
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            <div className="rounded-[1.75rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(234,247,255,0.95),rgba(255,255,255,0.95))] p-7">
-              <h3 className="text-xl font-bold text-slate-800">Ice Luxury</h3>
-              <p className="mt-3 leading-7 text-slate-600">
-                Premium silhouettes and clean presentation built to feel elevated.
-              </p>
-            </div>
-            <div className="rounded-[1.75rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(234,247,255,0.95),rgba(255,255,255,0.95))] p-7">
-              <h3 className="text-xl font-bold text-slate-800">Bold Identity</h3>
-              <p className="mt-3 leading-7 text-slate-600">
-                Strong graphics and memorable visual branding that stand apart.
-              </p>
-            </div>
-            <div className="rounded-[1.75rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(234,247,255,0.95),rgba(255,255,255,0.95))] p-7">
-              <h3 className="text-xl font-bold text-slate-800">
-                Streetwear Edge
-              </h3>
-              <p className="mt-3 leading-7 text-slate-600">
-                A cold-weather fashion concept with confidence and attitude.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="designer" className="px-6 py-10 md:py-16">
-        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/84 p-8 shadow-[0_18px_60px_rgba(100,170,220,0.14)] backdrop-blur-sm md:p-12">
-          <div className="grid items-center gap-10 md:grid-cols-[1.1fr_0.9fr]">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.5em] text-[#1a73c9]">
-                Designer Profile
-              </p>
-              <h2 className="mt-4 text-3xl font-bold text-slate-800 md:text-4xl">
-                Scott Schroer
-              </h2>
-              <p className="mt-6 leading-8 text-slate-600">
-                Top Eskimo was created to bring a bold frozen identity into luxury
-                streetwear. The goal is simple: build a brand that feels cold,
-                premium, confident, and unforgettable.
-              </p>
-              <p className="mt-4 leading-8 text-slate-600">
-                Every logo, every visual, and every piece is designed to carry an
-                icy presence that stands apart.
-              </p>
-            </div>
-
-            <div className="rounded-[2rem] border border-sky-100 bg-[linear-gradient(180deg,rgba(227,244,255,0.9),rgba(255,255,255,0.95))] p-8 text-center shadow-inner">
-              <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-full border border-sky-200 bg-white text-3xl font-black text-[#1a73c9] shadow-md">
-                TS
-              </div>
-              <h3 className="mt-5 text-xl font-bold text-slate-800">
-                Founder / Creative Director
-              </h3>
-              <p className="mt-3 text-sm leading-7 text-slate-600">
-                Building a luxury icy streetwear identity with bold visuals and
-                unforgettable branding.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="about" className="px-6 py-10 pb-20 md:py-16 md:pb-28">
-        <div className="mx-auto max-w-6xl rounded-[2.5rem] border border-sky-100 bg-white/84 p-8 shadow-[0_18px_60px_rgba(100,170,220,0.14)] backdrop-blur-sm md:p-12">
-          <p className="text-sm font-bold uppercase tracking-[0.5em] text-[#1a73c9]">
-            About Me
-          </p>
-          <h2 className="mt-4 text-3xl font-bold text-slate-800 md:text-4xl">
-            The vision behind Top Eskimo
-          </h2>
-          <p className="mt-6 leading-8 text-slate-600">
-            Top Eskimo is more than a clothing idea. It is a brand vision built
-            around confidence, originality, and a cold luxury aesthetic. The goal
-            is to create a fashion identity that feels premium, different, and
-            instantly recognizable.
-          </p>
-          <p className="mt-4 leading-8 text-slate-600">
-            From the logo designs to the website experience, every detail is meant
-            to feel sharp, polished, and bold. The brand reflects creativity,
-            ambition, and the drive to build something memorable from the ground up.
-          </p>
-        </div>
-      </section>
-
-      <section id="contact" className="px-6 pb-20">
-        <div className="mx-auto max-w-6xl rounded-[2rem] border border-sky-100 bg-white/84 p-8 text-center shadow-[0_18px_60px_rgba(100,170,220,0.14)] backdrop-blur-sm">
-          <h2 className="text-2xl font-bold text-slate-800 md:text-3xl">
-            Ready to build the brand bigger?
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl leading-8 text-slate-600">
-            Top Eskimo is live and ready for the next stage — products, visuals,
-            campaign design, and full luxury brand presentation.
-          </p>
-        </div>
+      <section className="designer">
+        <h2>Designer Profile</h2>
+        <p>
+          My name is Scott Schroer, and I am the founder of Top Eskimo. Have you
+          ever felt that you were the coldest around? Top Eskimo was built for
+          the ones who move differently, think boldly, and bring ice-cold energy
+          wherever they go.
+        </p>
       </section>
 
       <style jsx global>{`
+        * {
+          box-sizing: border-box;
+        }
+
         html {
           scroll-behavior: smooth;
         }
 
-        .logo-shimmer {
-          background-image: linear-gradient(
-            90deg,
-            #8dbfe6 0%,
-            #dff3ff 18%,
-            #b3daf7 35%,
-            #f7fcff 50%,
-            #b3daf7 65%,
-            #dff3ff 82%,
-            #8dbfe6 100%
-          );
-          background-size: 220% auto;
-          -webkit-background-clip: text;
-          background-clip: text;
-          text-shadow:
-            0 0 4px rgba(170, 220, 255, 0.16),
-            0 0 12px rgba(120, 195, 255, 0.1),
-            0 0 20px rgba(255, 255, 255, 0.15);
-          animation: shimmerFlow 6.5s linear infinite;
-        }
-
-        .frost-burst {
-          opacity: 0;
+        body {
+          margin: 0;
           background:
-            radial-gradient(circle at center, rgba(255, 255, 255, 0.82), rgba(200, 235, 255, 0.18) 45%, transparent 70%),
-            linear-gradient(
-              135deg,
-              transparent 0%,
-              rgba(255, 255, 255, 0.55) 20%,
-              rgba(180, 230, 255, 0.5) 35%,
-              transparent 55%,
-              rgba(255, 255, 255, 0.35) 75%,
-              transparent 100%
-            );
-          animation: freezeFlash 0.7s ease-out;
+            linear-gradient(rgba(4, 20, 35, 0.72), rgba(4, 20, 35, 0.82)),
+            radial-gradient(circle at top, #bff4ff 0%, #4ba3c7 35%, #081827 100%);
+          color: white;
+          font-family: Arial, Helvetica, sans-serif;
+          overflow-x: hidden;
         }
 
-        .blizzard-item {
+        main {
+          position: relative;
+          min-height: 100vh;
+          overflow: hidden;
+        }
+
+        .blizzard {
+          position: fixed;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          overflow: hidden;
+        }
+
+        .particle {
           position: absolute;
-          top: -10%;
-          filter: blur(0.2px);
-          animation-name: blizzardFall;
+          top: -80px;
+          animation-name: fallAndDrift;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
-          will-change: transform, opacity;
+          filter: drop-shadow(0 0 10px rgba(190, 245, 255, 0.9));
         }
 
-        .blizzard-item.snow {
+        .snow {
           border-radius: 999px;
-          background: radial-gradient(
-            circle,
-            rgba(255, 255, 255, 0.95) 0%,
-            rgba(215, 240, 255, 0.9) 55%,
-            rgba(215, 240, 255, 0) 100%
-          );
-          box-shadow: 0 0 10px rgba(210, 240, 255, 0.35);
+          background: radial-gradient(circle, white 0%, #c9f7ff 55%, transparent 72%);
         }
 
-        .blizzard-item.diamond {
-          background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.8),
-            rgba(180, 225, 255, 0.6)
-          );
+        .diamond {
           transform: rotate(45deg);
-          clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-          box-shadow: 0 0 12px rgba(180, 225, 255, 0.28);
+          background: linear-gradient(135deg, #ffffff, #9df4ff, #5ac8ff);
+          box-shadow: 0 0 18px rgba(160, 245, 255, 0.95);
         }
 
-        .blizzard-item.shard {
-          background: linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0.75),
-            rgba(170, 220, 255, 0.45)
-          );
-          clip-path: polygon(50% 0%, 100% 25%, 65% 100%, 20% 78%, 0% 28%);
-          box-shadow: 0 0 10px rgba(170, 220, 255, 0.22);
+        .shard {
+          width: 12px !important;
+          border-radius: 70% 20% 70% 20%;
+          background: linear-gradient(180deg, #ffffff, #8eeeff, transparent);
+          box-shadow: 0 0 16px rgba(150, 235, 255, 0.85);
         }
 
-        @keyframes shimmerFlow {
+        @keyframes fallAndDrift {
           0% {
-            background-position: 200% center;
-          }
-          100% {
-            background-position: -200% center;
-          }
-        }
-
-        @keyframes freezeFlash {
-          0% {
-            opacity: 0;
-            transform: scale(0.96);
-            filter: blur(12px);
-          }
-          20% {
-            opacity: 0.95;
-          }
-          100% {
-            opacity: 0;
-            transform: scale(1.06);
-            filter: blur(0px);
-          }
-        }
-
-        @keyframes blizzardFall {
-          0% {
-            transform: translate3d(0, -10vh, 0) rotate(0deg);
-            opacity: 0;
-          }
-          10% {
-            opacity: 0.85;
+            transform: translate3d(0, -120px, 0) rotate(0deg);
           }
           50% {
-            transform: translate3d(38px, 50vh, 0) rotate(120deg);
-            opacity: 0.5;
+            transform: translate3d(55px, 50vh, 0) rotate(180deg);
           }
           100% {
-            transform: translate3d(-26px, 115vh, 0) rotate(240deg);
+            transform: translate3d(-45px, 110vh, 0) rotate(360deg);
+          }
+        }
+
+        .hero,
+        .category-tabs,
+        .shop-section,
+        .designer {
+          position: relative;
+          z-index: 2;
+        }
+
+        .hero {
+          min-height: 85vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 80px 20px;
+        }
+
+        .logo-glow {
+          font-size: clamp(3rem, 10vw, 8rem);
+          font-weight: 900;
+          letter-spacing: -4px;
+          color: #eaffff;
+          text-shadow:
+            0 0 12px #8defff,
+            0 0 28px #49cfff,
+            0 0 55px #0ea5e9;
+          animation: shimmer 3s infinite linear;
+        }
+
+        @keyframes shimmer {
+          0%, 100% {
+            filter: brightness(1);
+          }
+          50% {
+            filter: brightness(1.45);
+          }
+        }
+
+        h1 {
+          font-size: clamp(2rem, 5vw, 4.5rem);
+          margin: 16px 0 10px;
+        }
+
+        .hero p {
+          max-width: 720px;
+          font-size: 1.2rem;
+          line-height: 1.7;
+          color: #e6fbff;
+        }
+
+        .contact-row {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 18px;
+          margin-top: 20px;
+        }
+
+        .contact-row a,
+        .category-tabs a {
+          color: white;
+          text-decoration: none;
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          background: rgba(255, 255, 255, 0.12);
+          backdrop-filter: blur(10px);
+          padding: 12px 18px;
+          border-radius: 999px;
+          box-shadow: 0 0 20px rgba(140, 230, 255, 0.25);
+        }
+
+        .category-tabs {
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 14px;
+          padding: 22px;
+        }
+
+        .category-tabs a:hover,
+        .contact-row a:hover {
+          background: rgba(170, 240, 255, 0.25);
+          box-shadow: 0 0 28px rgba(170, 240, 255, 0.6);
+        }
+
+        .shop-section {
+          padding: 80px 24px;
+          text-align: center;
+        }
+
+        .shop-section h2,
+        .designer h2 {
+          font-size: clamp(2.2rem, 5vw, 4rem);
+          margin-bottom: 12px;
+        }
+
+        .section-subtitle {
+          max-width: 780px;
+          margin: 0 auto 42px;
+          color: #dffaff;
+          line-height: 1.7;
+        }
+
+        .product-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 28px;
+          max-width: 1250px;
+          margin: 0 auto;
+        }
+
+        .product-card {
+          border: 1px solid rgba(255, 255, 255, 0.28);
+          background: rgba(5, 25, 42, 0.72);
+          backdrop-filter: blur(16px);
+          border-radius: 28px;
+          padding: 22px;
+          box-shadow:
+            inset 0 0 24px rgba(255, 255, 255, 0.08),
+            0 20px 55px rgba(0, 0, 0, 0.38);
+        }
+
+        .product-card h3 {
+          font-size: 1.45rem;
+          margin: 18px 0 4px;
+        }
+
+        .product-card p {
+          color: #bff6ff;
+          font-weight: bold;
+        }
+
+        .product-window {
+          height: 260px;
+          border-radius: 24px;
+          background:
+            radial-gradient(circle at top, rgba(255, 255, 255, 0.55), transparent 35%),
+            linear-gradient(145deg, #dffbff, #75d9f4 45%, #10324d);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          position: relative;
+          border: 1px solid rgba(255, 255, 255, 0.55);
+        }
+
+        .shirt-shape {
+          width: 150px;
+          height: 170px;
+          background: linear-gradient(180deg, #ffffff, #b8f4ff);
+          clip-path: polygon(
+            25% 0%,
+            75% 0%,
+            100% 25%,
+            82% 42%,
+            82% 100%,
+            18% 100%,
+            18% 42%,
+            0% 25%
+          );
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #12364a;
+          font-weight: 900;
+          box-shadow: 0 0 35px rgba(255, 255, 255, 0.85);
+        }
+
+        .freeze::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.9), transparent),
+            radial-gradient(circle, rgba(230, 255, 255, 0.95), rgba(110, 220, 255, 0.45), transparent);
+          animation: iceFlash 0.8s ease forwards;
+        }
+
+        @keyframes iceFlash {
+          0% {
             opacity: 0;
+            transform: scale(0.8);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.05);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(1.25);
+          }
+        }
+
+        .option-group {
+          margin-top: 18px;
+          text-align: left;
+        }
+
+        .option-group strong {
+          display: block;
+          margin-bottom: 8px;
+          color: #e8fdff;
+        }
+
+        .option-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .option-row button,
+        .cart-button {
+          cursor: pointer;
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          background: rgba(255, 255, 255, 0.11);
+          color: white;
+          padding: 9px 12px;
+          border-radius: 999px;
+          transition: 0.25s ease;
+        }
+
+        .option-row button:hover,
+        .option-row button.active {
+          background: #c7f7ff;
+          color: #082436;
+          box-shadow: 0 0 18px rgba(190, 250, 255, 0.85);
+        }
+
+        .selected {
+          margin: 16px 0;
+          color: #d9fbff;
+          font-size: 0.95rem;
+        }
+
+        .cart-button {
+          width: 100%;
+          padding: 14px;
+          font-weight: 900;
+          background: linear-gradient(135deg, #dffbff, #5ed8ff);
+          color: #082436;
+          box-shadow: 0 0 20px rgba(130, 235, 255, 0.45);
+        }
+
+        .cart-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 0 32px rgba(160, 245, 255, 0.85);
+        }
+
+        .designer {
+          margin: 40px auto 100px;
+          max-width: 950px;
+          padding: 50px 28px;
+          border-radius: 32px;
+          text-align: center;
+          background: rgba(5, 25, 42, 0.72);
+          border: 1px solid rgba(255, 255, 255, 0.22);
+          backdrop-filter: blur(16px);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .designer p {
+          font-size: 1.15rem;
+          line-height: 1.8;
+          color: #e4fbff;
+        }
+
+        @media (max-width: 700px) {
+          .hero {
+            padding-top: 60px;
+          }
+
+          .logo-glow {
+            letter-spacing: -2px;
+          }
+
+          .product-window {
+            height: 230px;
           }
         }
       `}</style>
