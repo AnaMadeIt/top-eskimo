@@ -26,7 +26,7 @@ const products = [
     eyebrow: "Built for every adventure",
     type: "T-Shirt",
     price: 40,
-    description: "Premium comfort. Everyday durability. A clean icy fit that stands out in every season.",
+    description: "The 1st Edition Top Eskimo OG. Limited Supply, so don't let this opportunity melt!";
     colors: [
       { name: "Light Blue", image: "/logos/frozen-standard-light-blue.jpg", swatch: "#9dd7ff" },
       { name: "White", image: "/logos/frozen-standard-white.jpg", swatch: "#ffffff" },
@@ -41,7 +41,7 @@ const products = [
     eyebrow: "Statement tee",
     type: "T-Shirt",
     price: 45,
-    description: "A bold graphic tee for the coldest thinker in the room.",
+    description: "Made with Reversible Fleece Technology that is truly one of a kind. Icy days don't stand a chance with this impenetrable fit.";
     colors: [
       { name: "Light Blue", image: "/logos/frozen-standard-light-blue.jpg", swatch: "#9dd7ff" },
       { name: "White", image: "/logos/frozen-standard-white.jpg", swatch: "#ffffff" },
@@ -145,7 +145,7 @@ function ProductShowcase({ product, onAddToCart }: { product: (typeof products)[
       <div className="product-title-row">
         <p>{product.eyebrow}</p>
         <h2>{product.name}</h2>
-        <span>{product.description}</span>
+        <span className="icy-description">{product.description}</span>
       </div>
 
       <div className="color-gallery">
@@ -401,7 +401,15 @@ export default function Page() {
 
       <section id="designer" className="designer">
         <h2>Designer Profile</h2>
-        <p>My name is Scott Schroer, and I am the founder of Top Eskimo. Have you ever felt that you were the coldest around? Top Eskimo was built for the ones who move differently, think boldly, and bring ice-cold energy wherever they go.</p>
+        <p>
+          My name is Scott Schroer, I am the founder of The Top Eskimo Brand. I created this company for those who know what it's like to have a hustle that is Ice Cold, what it's like to be left out in the cold, or somewhere in between.
+        </p>
+        <p>
+          It is no secret that the world can be a frigid place at times, but we at Top Eskimo help stylish individuals like yourself to express this understanding with a sense of swagger, status, and durability. When the going gets tough, the tough get going.
+        </p>
+        <p>
+          Peace, Love, and Prosperity.
+        </p>
       </section>
 
       <style jsx global>{`
@@ -457,6 +465,7 @@ export default function Page() {
         .product-title-row p { margin: 0 0 10px; text-transform: uppercase; letter-spacing: .32em; color: #0a4c88; font-size: .75rem; font-weight: 900; }
         .product-title-row h2 { margin: 0 0 12px; font-size: clamp(2.2rem, 5vw, 4.4rem); font-family: Georgia, serif; }
         .product-title-row span { color: #394c5d; line-height: 1.6; }
+        .icy-description { display: block; max-width: 880px; margin: 0 auto; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(1.15rem, 2vw, 1.55rem); font-weight: 700; letter-spacing: .035em; color: #073c70 !important; text-shadow: 0 0 10px rgba(255,255,255,.95), 0 0 22px rgba(108,216,255,.72), 0 0 34px rgba(32,154,255,.34); }
         .color-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; margin-bottom: 22px; }
         .color-tile { cursor: pointer; border: 1px solid rgba(8,36,54,.16); border-radius: 22px; padding: 18px; background: rgba(255,255,255,.72); color: #081827; transition: .25s ease; box-shadow: 0 14px 34px rgba(0,0,0,.08); }
         .color-tile.active, .color-tile:hover { border-color: #006edb; transform: translateY(-4px); box-shadow: 0 18px 44px rgba(0,111,219,.18); }
