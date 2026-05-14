@@ -24,8 +24,43 @@ const products = [
   { name: "Below Zero Sweats", type: "Sweatpants", price: "$65" },
 ];
 
-const colors = ["Ice Blue", "Black Ice", "Snow White", "Glacier Gray"];
+const frozenStandardColors = [
+  {
+    name: "Light Blue",
+    image: "/logos/frozen-standard-light-blue.jpg",
+    swatch: "#9dd7ff",
+  },
+  {
+    name: "White",
+    image: "/logos/frozen-standard-white.jpg",
+    swatch: "#ffffff",
+  },
+  {
+    name: "Tan",
+    image: "/logos/frozen-standard-tan.jpg",
+    swatch: "#d8b486",
+  },
+  {
+    name: "Mint Green",
+    image: "/logos/frozen-standard-mint.jpg",
+    swatch: "#b9f0dc",
+  },
+  {
+    name: "Purple",
+    image: "/logos/frozen-standard-purple.jpg",
+    swatch: "#9c77d9",
+  },
+];
+
+const defaultColors = ["Ice Blue", "Black Ice", "Snow White", "Glacier Gray"];
 const sizes = ["S", "M", "L", "XL", "XXL"];
+
+type CartItem = {
+  product: string;
+  color: string;
+  size: string;
+  price: string;
+};
 
 function InstagramLogo() {
   return (
@@ -97,25 +132,56 @@ function BlizzardBackground() {
   );
 }
 
-function ProductCard({ product }: { product: (typeof products)[0] }) {
-  const [color, setColor] = useState(colors[0]);
+function ProductCard({
+  product,
+  onAddToCart,
+}: {
+  product: (typeof products)[0];
+  onAddToCart: (item: CartItem) => void;
+}) {
+  const isFrozenStandard = product.name === "Frozen Standard Tee";
+  const [color, setColor] = useState(
+    isFrozenStandard ? frozenStandardColors[0].name : defaultColors[0]
+  );
   const [size, setSize] = useState(sizes[1]);
   const [freezing, setFreezing] = useState(false);
+  const [added, setAdded] = useState(false);
+
+  const selectedFrozenColor = frozenStandardColors.find((c) => c.name === color);
 
   const freezeChange = (callback: () => void) => {
     setFreezing(true);
     setTimeout(() => {
       callback();
       setTimeout(() => setFreezing(false), 450);
-    }, 350);
+    }, 250);
+  };
+
+  const handleAddToCart = () => {
+    setAdded(true);
+    onAddToCart({
+      product: product.name,
+      color,
+      size,
+      price: product.price,
+    });
+    setTimeout(() => setAdded(false), 1100);
   };
 
   return (
     <div className="product-card">
       <div className={`product-window ${freezing ? "freeze" : ""}`}>
-        <div className="shirt-shape">
-          <span>{product.type}</span>
-        </div>
+        {isFrozenStandard && selectedFrozenColor ? (
+          <img
+            src={selectedFrozenColor.image}
+            alt={`${product.name} in ${selectedFrozenColor.name}`}
+            className="product-image"
+          />
+        ) : (
+          <div className="shirt-shape">
+            <span>{product.type}</span>
+          </div>
+        )}
       </div>
 
       <h3>{product.name}</h3>
@@ -123,17 +189,36 @@ function ProductCard({ product }: { product: (typeof products)[0] }) {
 
       <div className="option-group">
         <strong>Color</strong>
-        <div className="option-row">
-          {colors.map((c) => (
-            <button
-              key={c}
-              className={color === c ? "active" : ""}
-              onClick={() => freezeChange(() => setColor(c))}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
+        {isFrozenStandard ? (
+          <div className="color-card-row">
+            {frozenStandardColors.map((c) => (
+              <button
+                key={c.name}
+                className={`color-card ${color === c.name ? "active" : ""}`}
+                onClick={() => freezeChange(() => setColor(c.name))}
+                aria-label={`Select ${c.name}`}
+              >
+                <span
+                  className="color-swatch"
+                  style={{ background: c.swatch }}
+                />
+                <span>{c.name}</span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="option-row">
+            {defaultColors.map((c) => (
+              <button
+                key={c}
+                className={color === c ? "active" : ""}
+                onClick={() => freezeChange(() => setColor(c))}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="option-group">
@@ -155,12 +240,20 @@ function ProductCard({ product }: { product: (typeof products)[0] }) {
         Selected: {color} / {size}
       </div>
 
-      <button className="cart-button">Add to Frozen Cart</button>
+      <button className={`cart-button ${added ? "added" : ""}`} onClick={handleAddToCart}>
+        {added ? "Added to Frozen Cart ❄️" : "Add to Frozen Cart"}
+      </button>
     </div>
   );
 }
 
 export default function Page() {
+  const [cart, setCart] = useState<CartItem[]>([]);
+
+  const addToCart = (item: CartItem) => {
+    setCart((prev) => [...prev, item]);
+  };
+
   return (
     <main>
       <BlizzardBackground />
@@ -240,9 +333,25 @@ export default function Page() {
           before locking in.
         </p>
 
+        <div className="cart-preview">
+          <div>
+            <strong>Frozen Cart</strong>
+            <span>{cart.length} item{cart.length === 1 ? "" : "s"}</span>
+          </div>
+          {cart.length > 0 && (
+            <ul>
+              {cart.slice(-3).map((item, index) => (
+                <li key={`${item.product}-${item.color}-${item.size}-${index}`}>
+                  {item.product} — {item.color} / {item.size}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <div className="product-grid">
           {products.map((product) => (
-            <ProductCard key={product.name} product={product} />
+            <ProductCard key={product.name} product={product} onAddToCart={addToCart} />
           ))}
         </div>
       </section>
@@ -629,8 +738,43 @@ export default function Page() {
 
         .section-subtitle {
           max-width: 780px;
-          margin: 0 auto 42px;
+          margin: 0 auto 32px;
           color: #dffaff;
+          line-height: 1.7;
+        }
+
+        .cart-preview {
+          max-width: 900px;
+          margin: 0 auto 32px;
+          padding: 18px 22px;
+          border-radius: 24px;
+          background: rgba(255, 255, 255, 0.13);
+          border: 1px solid rgba(255, 255, 255, 0.28);
+          backdrop-filter: blur(12px);
+          box-shadow: 0 0 30px rgba(130, 235, 255, 0.22);
+          text-align: left;
+        }
+
+        .cart-preview div {
+          display: flex;
+          justify-content: space-between;
+          gap: 16px;
+          align-items: center;
+        }
+
+        .cart-preview strong {
+          font-size: 1.1rem;
+          color: #eaffff;
+        }
+
+        .cart-preview span,
+        .cart-preview li {
+          color: #dffaff;
+        }
+
+        .cart-preview ul {
+          margin: 12px 0 0;
+          padding-left: 18px;
           line-height: 1.7;
         }
 
@@ -667,6 +811,20 @@ export default function Page() {
           border: 1px solid rgba(255, 255, 255, 0.55);
         }
 
+        .product-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.35s ease, filter 0.35s ease;
+          filter: saturate(1.16) contrast(1.05) brightness(1.03);
+        }
+
+        .product-card:hover .product-image {
+          transform: scale(1.045);
+          filter: saturate(1.26) contrast(1.08) brightness(1.05);
+        }
+
         .shirt-shape {
           width: 150px;
           height: 170px;
@@ -697,6 +855,7 @@ export default function Page() {
             linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.9), transparent),
             radial-gradient(circle, rgba(230, 255, 255, 0.95), rgba(110, 220, 255, 0.45), transparent);
           animation: iceFlash 0.8s ease forwards;
+          pointer-events: none;
         }
 
         @keyframes iceFlash {
@@ -725,13 +884,15 @@ export default function Page() {
           color: #e8fdff;
         }
 
-        .option-row {
+        .option-row,
+        .color-card-row {
           display: flex;
           flex-wrap: wrap;
           gap: 8px;
         }
 
         .option-row button,
+        .color-card,
         .cart-button {
           cursor: pointer;
           border: 1px solid rgba(255, 255, 255, 0.35);
@@ -742,8 +903,24 @@ export default function Page() {
           transition: 0.25s ease;
         }
 
+        .color-card {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .color-swatch {
+          width: 15px;
+          height: 15px;
+          border-radius: 999px;
+          border: 1px solid rgba(255, 255, 255, 0.8);
+          box-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
+        }
+
         .option-row button:hover,
-        .option-row button.active {
+        .option-row button.active,
+        .color-card:hover,
+        .color-card.active {
           background: #c7f7ff;
           color: #082436;
           box-shadow: 0 0 18px rgba(190, 250, 255, 0.85);
@@ -764,9 +941,14 @@ export default function Page() {
           box-shadow: 0 0 20px rgba(130, 235, 255, 0.45);
         }
 
-        .cart-button:hover {
+        .cart-button:hover,
+        .cart-button.added {
           transform: translateY(-2px);
           box-shadow: 0 0 32px rgba(160, 245, 255, 0.85);
+        }
+
+        .cart-button.added {
+          background: linear-gradient(135deg, #ffffff, #a8f5ff);
         }
 
         .designer {
