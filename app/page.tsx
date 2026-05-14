@@ -37,41 +37,17 @@ const products = [
   },
   {
     id: "ice-savant",
-    name: "Ice $avant",
+    name: "Ice $avant ! $",
     eyebrow: "Statement tee",
     type: "T-Shirt",
     price: 45,
     description: "A bold graphic tee for the coldest thinker in the room.",
     colors: [
-      { name: "Ice Blue", image: "/logos/frozen-standard-light-blue.jpg", swatch: "#9dd7ff" },
-      { name: "Snow White", image: "/logos/frozen-standard-white.jpg", swatch: "#ffffff" },
-      { name: "Purple Frost", image: "/logos/frozen-standard-purple.jpg", swatch: "#9c77d9" },
-    ],
-  },
-  {
-    id: "cold-front-hoodie",
-    name: "Cold Front Hoodie",
-    eyebrow: "Heavyweight comfort",
-    type: "Sweatshirt",
-    price: 75,
-    description: "Soft, warm, and built for cold-front confidence.",
-    colors: [
-      { name: "Glacier Blue", image: "/logos/frozen-standard-light-blue.jpg", swatch: "#9dd7ff" },
-      { name: "Snow White", image: "/logos/frozen-standard-white.jpg", swatch: "#ffffff" },
-      { name: "Black Ice", image: "/logos/top_eskimo_10_blue.png", swatch: "#0b1728" },
-    ],
-  },
-  {
-    id: "below-zero-sweats",
-    name: "Below Zero Sweats",
-    eyebrow: "Everyday chill set",
-    type: "Sweatpants",
-    price: 65,
-    description: "Relaxed premium sweats made for cold days, late nights, and bold moves.",
-    colors: [
-      { name: "Ice Blue", image: "/logos/frozen-standard-light-blue.jpg", swatch: "#9dd7ff" },
-      { name: "Glacier Gray", image: "/logos/frozen-standard-white.jpg", swatch: "#dce6ec" },
-      { name: "Mint Frost", image: "/logos/frozen-standard-mint.jpg", swatch: "#b9f0dc" },
+      { name: "Light Blue", image: "/logos/frozen-standard-light-blue.jpg", swatch: "#9dd7ff" },
+      { name: "White", image: "/logos/frozen-standard-white.jpg", swatch: "#ffffff" },
+      { name: "Tan", image: "/logos/frozen-standard-tan.jpg", swatch: "#d8b486" },
+      { name: "Mint Green", image: "/logos/frozen-standard-mint.jpg", swatch: "#b9f0dc" },
+      { name: "Purple", image: "/logos/frozen-standard-purple.jpg", swatch: "#9c77d9" },
     ],
   },
 ];
@@ -308,7 +284,67 @@ function CheckoutCart({ cart, setCart }: { cart: CartItem[]; setCart: React.Disp
 
 export default function Page() {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [showCartPage, setShowCartPage] = useState(false);
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  if (showCartPage) {
+    return (
+      <main>
+        <BlizzardBackground />
+        <header className="site-header">
+          <div className="header-left">
+            <button className="brand brand-button" onClick={() => setShowCartPage(false)}>Top Eskimo</button>
+          </div>
+          <nav className="top-tabs">
+            <button onClick={() => setShowCartPage(false)}>← Continue Shopping</button>
+          </nav>
+        </header>
+        <CheckoutCart cart={cart} setCart={setCart} />
+        <style jsx global>{`
+          * { box-sizing: border-box; }
+          html { scroll-behavior: smooth; }
+          body { margin: 0; color: white; font-family: Arial, Helvetica, sans-serif; overflow-x: hidden; background: linear-gradient(rgba(4, 20, 35, 0.74), rgba(4, 20, 35, 0.9)), radial-gradient(circle at top, #bff4ff 0%, #4ba3c7 35%, #081827 100%); }
+          main { position: relative; min-height: 100vh; overflow: hidden; }
+          .site-header { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 18px 32px; background: rgba(4, 20, 35, 0.72); backdrop-filter: blur(18px); border-bottom: 1px solid rgba(255,255,255,.18); box-shadow: 0 10px 35px rgba(0,0,0,.25); }
+          .header-left { display: flex; align-items: center; gap: 18px; }
+          .brand { color: #eaffff; font-size: clamp(1.4rem, 3vw, 2.4rem); font-weight: 900; text-decoration: none; letter-spacing: -1px; text-shadow: 0 0 12px #8defff, 0 0 28px #49cfff; }
+          .brand-button { cursor: pointer; border: 0; background: transparent; }
+          .top-tabs { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; }
+          .top-tabs button { cursor: pointer; color: white; text-decoration: none; padding: 11px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.12); box-shadow: 0 0 18px rgba(140,230,255,.2); transition: .25s ease; }
+          .top-tabs button:hover { background: rgba(190,245,255,.24); box-shadow: 0 0 28px rgba(180,245,255,.72); transform: translateY(-2px); }
+          .blizzard { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+          .particle { position: absolute; top: -80px; animation-name: fallAndDrift; animation-timing-function: linear; animation-iteration-count: infinite; filter: drop-shadow(0 0 10px rgba(190,245,255,.9)); opacity: .72; }
+          .snow { border-radius: 999px; background: radial-gradient(circle, white 0%, #c9f7ff 55%, transparent 72%); }
+          .diamond { transform: rotate(45deg); background: linear-gradient(135deg, #fff, #9df4ff, #5ac8ff); box-shadow: 0 0 18px rgba(160,245,255,.95); }
+          .shard { width: 12px !important; border-radius: 70% 20% 70% 20%; background: linear-gradient(180deg, #fff, #8eeeff, transparent); box-shadow: 0 0 16px rgba(150,235,255,.85); }
+          .falling-eskimo { position: absolute; top: -160px; height: auto; animation-name: eskimoFall; animation-timing-function: linear; animation-iteration-count: infinite; opacity: .48; filter: drop-shadow(0 0 10px rgba(255,255,255,.95)) drop-shadow(0 0 22px rgba(80,210,255,.8)); z-index: 1; }
+          @keyframes fallAndDrift { 0% { transform: translate3d(0,-120px,0) rotate(0deg); } 50% { transform: translate3d(55px,50vh,0) rotate(180deg); } 100% { transform: translate3d(-45px,110vh,0) rotate(360deg); } }
+          @keyframes eskimoFall { 0% { transform: translate3d(0,-220px,0) rotate(-12deg) scale(.86); opacity: 0; } 10% { opacity: .48; } 50% { transform: translate3d(85px,50vh,0) rotate(10deg) scale(1); opacity: .54; } 100% { transform: translate3d(-85px,118vh,0) rotate(-14deg) scale(.92); opacity: 0; } }
+          .checkout-section { position: relative; z-index: 2; padding: 80px 24px; text-align: center; }
+          .checkout-card { max-width: 1050px; margin: 0 auto; border-radius: 34px; padding: 34px; background: rgba(5,25,42,.86); border: 1px solid rgba(255,255,255,.24); box-shadow: 0 30px 80px rgba(0,0,0,.34); backdrop-filter: blur(18px); }
+          .checkout-heading h2 { font-size: clamp(2.2rem, 5vw, 4rem); margin: 0 0 12px; }
+          .checkout-heading span { max-width: 780px; margin: 0 auto 42px; color: #dffaff; line-height: 1.7; display: block; }
+          .cart-list { display: grid; gap: 12px; margin: 22px 0; text-align: left; }
+          .empty-cart { color: #dffaff; text-align: center; }
+          .cart-line { display: flex; justify-content: space-between; gap: 14px; align-items: center; border-radius: 18px; padding: 14px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); }
+          .cart-line span { display: block; margin-top: 4px; color: #dffaff; }
+          .cart-line button { cursor: pointer; border: 1px solid rgba(255,255,255,.24); background: rgba(255,255,255,.1); color: white; border-radius: 999px; padding: 8px 12px; }
+          .cart-total { margin: 14px 0 22px; font-size: 1.7rem; font-family: Georgia, serif; }
+          .checkout-form { display: grid; gap: 12px; }
+          .checkout-form input { width: 100%; border: 1px solid rgba(255,255,255,.2); border-radius: 14px; padding: 14px 16px; background: rgba(255,255,255,.12); color: white; outline: none; }
+          .checkout-form input::placeholder { color: rgba(255,255,255,.72); }
+          .form-grid { display: grid; grid-template-columns: 1fr 120px 120px; gap: 12px; }
+          .payment-options { justify-content: center; margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; }
+          .payment-options button { cursor: pointer; border: 1px solid rgba(255,255,255,.24); background: rgba(255,255,255,.1); color: white; border-radius: 999px; padding: 12px 16px; }
+          .payment-options button.active { background: #c7f7ff; color: #082436; }
+          .payment-note, .order-message { color: #dffaff; line-height: 1.6; }
+          .submit-order { cursor: pointer; border: 0; border-radius: 16px; padding: 16px 20px; font-weight: 900; color: white; background: linear-gradient(135deg, #00427f, #006edb); box-shadow: 0 0 24px rgba(0,111,219,.25); transition: .25s ease; }
+          .submit-order:disabled { opacity: .45; cursor: not-allowed; }
+          @media (max-width: 900px) { .site-header { flex-direction: column; padding: 16px; } .form-grid { grid-template-columns: 1fr; } }
+        `}</style>
+      </main>
+    );
+  }
 
   return (
     <main>
@@ -324,7 +360,7 @@ export default function Page() {
         </div>
         <nav className="top-tabs">
           <a href="#merchandise">Merchandise</a>
-          <a href="#checkout">Cart ({cartCount})</a>
+          <button onClick={() => setShowCartPage(true)}>🛒 Cart ({cartCount})</button>
           <a href="#designer">Designer Profile</a>
         </nav>
       </header>
@@ -348,9 +384,20 @@ export default function Page() {
         <div className="product-stack">
           {products.map((product) => <ProductShowcase key={product.id} product={product} onAddToCart={(item) => setCart((prev) => [...prev, item])} />)}
         </div>
-      </section>
 
-      <CheckoutCart cart={cart} setCart={setCart} />
+        <section className="coming-soon-section">
+          <div className="coming-soon-card">
+            <p>Coming Soon</p>
+            <h2>Cold Front Hoodie</h2>
+            <span>Heavyweight comfort is in the works. Stay tuned for the next icy drop.</span>
+          </div>
+          <div className="coming-soon-card">
+            <p>Coming Soon</p>
+            <h2>Below Zero Sweats</h2>
+            <span>Premium sweats are coming soon to complete the Top Eskimo fit.</span>
+          </div>
+        </section>
+      </section>
 
       <section id="designer" className="designer">
         <h2>Designer Profile</h2>
@@ -367,11 +414,11 @@ export default function Page() {
         .brand { color: #eaffff; font-size: clamp(1.4rem, 3vw, 2.4rem); font-weight: 900; text-decoration: none; letter-spacing: -1px; text-shadow: 0 0 12px #8defff, 0 0 28px #49cfff; }
         .header-icons, .top-tabs, .contact-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .top-tabs { justify-content: flex-end; }
-        .top-tabs a, .mini-icon-link, .icon-link, .instagram-logo-link { color: white; text-decoration: none; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.12); box-shadow: 0 0 18px rgba(140,230,255,.2); transition: .25s ease; }
-        .top-tabs a { padding: 11px 16px; border-radius: 999px; }
+        .top-tabs a, .top-tabs button, .mini-icon-link, .icon-link, .instagram-logo-link { color: white; text-decoration: none; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.12); box-shadow: 0 0 18px rgba(140,230,255,.2); transition: .25s ease; }
+        .top-tabs a, .top-tabs button { cursor: pointer; padding: 11px 16px; border-radius: 999px; font: inherit; }
         .mini-icon-link, .icon-link, .instagram-logo-link { width: 42px; height: 42px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
         .icon-link, .instagram-logo-link { width: 62px; height: 62px; font-size: 33px; }
-        .top-tabs a:hover, .mini-icon-link:hover, .icon-link:hover, .instagram-logo-link:hover { transform: translateY(-2px) scale(1.04); background: rgba(190,245,255,.24); box-shadow: 0 0 30px rgba(180,245,255,.8); }
+        .top-tabs a:hover, .top-tabs button:hover, .mini-icon-link:hover, .icon-link:hover, .instagram-logo-link:hover { transform: translateY(-2px) scale(1.04); background: rgba(190,245,255,.24); box-shadow: 0 0 30px rgba(180,245,255,.8); }
         .instagram-logo { width: 36px; height: 36px; border-radius: 11px; position: relative; display: inline-block; background: radial-gradient(circle at 30% 105%, #fdf497 0%, #fdf497 14%, transparent 30%), radial-gradient(circle at 30% 105%, #fd5949 0%, #fd5949 32%, transparent 48%), radial-gradient(circle at 70% 20%, #d6249f 0%, #d6249f 32%, transparent 52%), linear-gradient(135deg, #285aeb 0%, #8134af 45%, #dd2a7b 70%, #feda75 100%); box-shadow: 0 0 18px rgba(255,255,255,.55); }
         .instagram-logo::before { content: ""; position: absolute; inset: 8px; border: 3px solid white; border-radius: 9px; }
         .instagram-lens { position: absolute; width: 10px; height: 10px; border: 3px solid white; border-radius: 999px; left: 13px; top: 13px; }
@@ -400,6 +447,11 @@ export default function Page() {
         .shop-section h2, .checkout-heading h2, .designer h2 { font-size: clamp(2.2rem, 5vw, 4rem); margin: 0 0 12px; }
         .section-subtitle, .checkout-heading span { max-width: 780px; margin: 0 auto 42px; color: #dffaff; line-height: 1.7; display: block; }
         .product-stack { display: grid; gap: 56px; max-width: 1320px; margin: 0 auto; }
+        .coming-soon-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; max-width: 1040px; margin: 54px auto 0; }
+        .coming-soon-card { border-radius: 30px; padding: 42px 28px; background: rgba(236,251,255,.74); color: #081827; border: 1px solid rgba(255,255,255,.68); box-shadow: 0 24px 60px rgba(0,0,0,.2); backdrop-filter: blur(18px); }
+        .coming-soon-card p { margin: 0 0 12px; text-transform: uppercase; letter-spacing: .32em; color: #0a4c88; font-size: .75rem; font-weight: 900; }
+        .coming-soon-card h2 { margin: 0 0 12px; font-size: clamp(1.8rem, 4vw, 3rem); font-family: Georgia, serif; }
+        .coming-soon-card span { color: #394c5d; line-height: 1.6; }
         .product-showcase { border-radius: 34px; padding: 34px; background: rgba(236,251,255,.9); color: #081827; border: 1px solid rgba(255,255,255,.7); box-shadow: 0 30px 80px rgba(0,0,0,.28); backdrop-filter: blur(18px); }
         .product-title-row { margin-bottom: 28px; }
         .product-title-row p { margin: 0 0 10px; text-transform: uppercase; letter-spacing: .32em; color: #0a4c88; font-size: .75rem; font-weight: 900; }
